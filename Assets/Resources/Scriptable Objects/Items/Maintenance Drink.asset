@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12946eb396b674d4eb13a388cf2d5eef, type: 3}
+  m_Name: Maintenance Drink
+  m_EditorClassIdentifier: 
+  itemPositionIndex: 0
+  itemName: Maintenance Drink
+  itemDescription: A drink used to activate the self healing functions in the nanomachine
+    technology.
+  itemType: 0
+  healingAmount: 50
+  itemCount: 5
