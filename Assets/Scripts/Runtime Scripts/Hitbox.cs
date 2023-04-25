@@ -6,49 +6,42 @@ using UnityEngine.Events;
 [System.Serializable]
 public class HitDetected : UnityEvent<Vector2> { }
 
+//for calling the takedamage method
+[System.Serializable]
+public class DamageDone : UnityEvent<float> { }
+
 [System.Serializable]
 public class DashAttackConnected : UnityEvent<Vector2> { }
 
 //may rename later to DetectCollisions
 public class Hitbox : MonoBehaviour
 {
-    //private int i = 3;
     [HideInInspector] public bool wasHit;
+    public bool hasPlayerDashed;
     private bool checkForNoContact;
-    //private bool doDodgeCheck;
-    public float blockHealth;//i could get rid of this
     private float currentBlockHealth;//and this //might need to be public
-    public float blockDefense;//and this too
     public float hitboxHealth;//and this
     private float currenthitboxHealth;//and this
     public float hitboxDefense;//and this
     public float hbStrongMultiplier;//and this
     public float hbWeakMultiplier;//and this
     [HideInInspector] public float forceOfAttack;
-    public bool isPlayerUpgraded;
-    public bool hasPlayerDashed;
     public bool hitByProjectile;
     [HideInInspector] public Stats myStats;
     private Rigidbody2D rb;
     public HitDetected OnHitDetected;
-    public UnityEvent OnDashAttackConnected;
     private Vector2 hitDirection;
     public Vector2 hitboxPoint;
     public Vector2 hitboxOffset;
     public Vector2 hitboxSize;
     public Vector2 animHitboxOffset;
     public Vector2 hitboxSizeOffset;
-    public enum HitboxType
-    {
-        regular
-    }
     public enum HitboxStrength
     {
         medium,
         strong,
         weak
     }
-    public HitboxType hitboxType;
     public HitboxStrength hitboxStrength;
 
     void Awake()
@@ -68,10 +61,14 @@ public class Hitbox : MonoBehaviour
 
     void DetectHit()
     {
+        //review the tutorial on melee combat
+        //the mask makes it so that the collider only checks for things under the mask
         LayerMask mask1 = LayerMask.GetMask("Player Hitboxes");
         LayerMask mask2 = LayerMask.GetMask("Enemy Hitboxes");
         Collider2D collider1 = new Collider2D();// = Physics2D.OverlapBox(hitboxPoint, hitboxSize, 0, mask1);
         Collider2D collider2 = new Collider2D();// = Physics2D.OverlapBox(hitboxPoint, hitboxSize, 0, mask2);
+
+        //collider1.GetComponent<AttackCollider>();
 
         if (gameObject.tag == "Enemy")
         {
@@ -82,115 +79,82 @@ public class Hitbox : MonoBehaviour
         {
             collider2 = Physics2D.OverlapBox(hitboxPoint, hitboxSize + hitboxSizeOffset, 0, mask2);
         }
-        
-        if (hitboxType == HitboxType.regular)
+
+        if (wasHit == false && collider1 != null && gameObject.tag == "Enemy")
         {
-            if (wasHit == false && collider1 != null && gameObject.tag == "Enemy")
+            wasHit = true;
+            float b = 0;
+            float hbMultiplier = 0;
+
+            //finding the hitbox component of the boss might be fine, but i need to ditch the stats class
+            Hitbox hb = collider1.GetComponentInParent<Hitbox>();
+            Stats stats = hb.myStats; //I want to get rid of this
+            Vector2 attackVector = transform.position - collider1.transform.position;
+            forceOfAttack = stats.force;
+            //Debug.Log(stats.currentAtk);
+
+            if (hb.gameObject.tag == "Projectile") hitByProjectile = true;
+
+            switch (hitboxStrength)
             {
-                wasHit = true;
-                float b = 0;
-                float hbMultiplier = 0;
-
-                Hitbox hb = collider1.GetComponentInParent<Hitbox>();
-                Stats stats = hb.myStats;
-                Vector2 a = transform.position - collider1.transform.position;
-                forceOfAttack = stats.force;
-                //Debug.Log(stats.currentAtk);
-
-                if (hb.gameObject.tag == "Projectile") hitByProjectile = true;
-
-                switch (hitboxStrength)
-                {
-                    case HitboxStrength.medium:
-                        hbMultiplier = 1;
-                        break;
-                    case HitboxStrength.strong:
-                        hbMultiplier = hbStrongMultiplier;
-                        break;
-                    case HitboxStrength.weak:
-                        hbMultiplier = hbWeakMultiplier;
-                        break;
-                }
-                
-                if (hb.isPlayerUpgraded && hb.hasPlayerDashed)
-                {
-                    //Debug.Log("atk: " + stats.currentAtk);
-                    //Debug.Log("pot: " + stats.attackPotential);
-                    //Debug.Log("b: " + b);
-                    //Debug.Log("mul: " + hbMultiplier);
-                    //Debug.Log(((stats.currentAtk * stats.attackPotential) + b) * hbMultiplier);
-                    if (OnDashAttackConnected != null) OnDashAttackConnected.Invoke();
-                }
-
-                rb.velocity = a * (stats.force);
-                //Debug.Log(stats.attackPotential);
-                Debug.Log(((stats.currentAtk * stats.attackPotential) + b) * hbMultiplier);
-                myStats.TakeDamage(((stats.currentAtk * stats.attackPotential) + b) * hbMultiplier);
-                if (OnHitDetected != null) OnHitDetected.Invoke(a);
-                
-                checkForNoContact = true;
-            }
-            
-            if (wasHit == false && collider2 != null && gameObject.tag == "Player")
-            {
-                wasHit = true;
-
-                Hitbox hb = collider2.GetComponentInParent<Hitbox>();
-                Stats stats = hb.myStats;
-                Vector2 a = transform.position - collider2.transform.position;
-                forceOfAttack = stats.force;
-
-                if (hb.gameObject.tag == "Projectile") hitByProjectile = true;
-
-                rb.velocity = a * (stats.force);
-                myStats.TakeDamage(stats.currentAtk * stats.attackPotential);
-                if (OnHitDetected != null) OnHitDetected.Invoke(a);
-
-                checkForNoContact = true;
+                case HitboxStrength.medium:
+                    hbMultiplier = 1;
+                    break;
+                case HitboxStrength.strong:
+                    hbMultiplier = hbStrongMultiplier;
+                    break;
+                case HitboxStrength.weak:
+                    hbMultiplier = hbWeakMultiplier;
+                    break;
             }
 
-            if (checkForNoContact)
-            {
-                if (gameObject.tag == "Enemy")
-                {
-                    if (collider1 == null)
-                    {
-                        wasHit = false;
-                    }
-                }
+            rb.velocity = attackVector * (stats.force);
+            //Debug.Log(stats.attackPotential);
+            Debug.Log(((stats.currentAtk * stats.attackPotential) + b) * hbMultiplier);
+            myStats.TakeDamage(((stats.currentAtk * stats.attackPotential) + b) * hbMultiplier);
+            if (OnHitDetected != null) OnHitDetected.Invoke(attackVector);
 
-                if (gameObject.tag == "Player")
+            checkForNoContact = true;
+        }
+
+        if (wasHit == false && collider2 != null && gameObject.tag == "Player")
+        {
+            wasHit = true;
+
+            Hitbox hb = collider2.GetComponentInParent<Hitbox>();
+            Stats stats = hb.myStats;
+            Vector2 a = transform.position - collider2.transform.position;
+            forceOfAttack = stats.force;
+
+            if (hb.gameObject.tag == "Projectile") hitByProjectile = true;
+
+            rb.velocity = a * (stats.force);
+            myStats.TakeDamage(stats.currentAtk * stats.attackPotential);
+            if (OnHitDetected != null) OnHitDetected.Invoke(a);
+
+            checkForNoContact = true;
+        }
+
+        if (checkForNoContact)
+        {
+            if (gameObject.tag == "Enemy")
+            {
+                if (collider1 == null)
                 {
-                    if (collider2 == null)
-                    {
-                        wasHit = false;
-                    }
+                    wasHit = false;
+                }
+            }
+
+            if (gameObject.tag == "Player")
+            {
+                if (collider2 == null)
+                {
+                    wasHit = false;
                 }
             }
         }
     }
     
-    //called during animation events
-    public void ChangePlayerHitboxType(string currentStyle)
-    {
-        switch (currentStyle)
-        {
-            case "regular":
-                hitboxType = HitboxType.regular;
-                break;
-        }
-    }
-
-    public void ChangeEnemyHitboxType(int num)
-    {
-        switch (num)
-        {
-            case 0:
-                hitboxType = HitboxType.regular;
-                break;
-        }
-    }
-
     public void ChangeHitboxStrength(int num)
     {
         switch (num)

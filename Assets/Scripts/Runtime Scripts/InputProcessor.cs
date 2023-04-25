@@ -10,11 +10,8 @@ public class InputProcessor : MonoBehaviour
     [HideInInspector] public float hDir, vDir, hDir2, vDir2;
     private float xPoint, yPoint, xPoint2, yPoint2;
     [HideInInspector] public float moveH, moveV, lookX, lookY;
-    private bool dash, dash2, evade, evade2, attackA, attackA2, attackB, attackB2, proj, proj2, upgrade, upgrade2,
-        atkAbility, atkAbility2, defAbility, defAbility2, spdAbility, spdAbility2;
-    private bool upgradeShortcut, upgradeShorcut2;
-    [HideInInspector] public bool dbutton, abuttonA, abuttonB, pbutton, ubutton, ebutton, 
-        aAbutton, dAbutton, sAbutton;
+    private bool attack, attack2, proj, proj2, evade, evade2;
+    [HideInInspector] public bool abutton, pbutton, ebutton;
     [HideInInspector] public static bool pressedPause;
     [HideInInspector] public Vector2 movement;
     [HideInInspector] public Vector2 lookV;
@@ -23,16 +20,14 @@ public class InputProcessor : MonoBehaviour
     [HideInInspector] public int controller;
     [HideInInspector] public float m;
     [HideInInspector] public float multiValH, multiValV;
-    private Stats stats;
     private Hitbox hb;
     Vector2 JoyVector;
     
     void Awake()
     {
         cam = FindObjectOfType<Camera>().GetComponent<Camera>();
-        stats = GetComponent<Stats>();
         hb = GetComponent<Hitbox>();
-        m = stats.baseMoveSpd;
+        //m = stats.baseMoveSpd;
     }
 
     void Start()
@@ -43,10 +38,10 @@ public class InputProcessor : MonoBehaviour
 
     void Update()
     {
-        m = stats.baseMoveSpd;
+        //m = stats.baseMoveSpd;
         tempV = CalculatePlayerMouseVector();
         ProcessInputs();
-        //Debug.Log(ubutton);
+        //AttacAndComboInputs();
     }
 
     //method to calculate mouse direction relative to the player
@@ -95,10 +90,6 @@ public class InputProcessor : MonoBehaviour
         {
             controller = 0;
         }
-        else if (Input.GetButton("Dash"))
-        {
-            controller = 0;
-        }
         else if (Input.GetButton("Fire1"))
         {
             controller = 0;
@@ -110,10 +101,6 @@ public class InputProcessor : MonoBehaviour
 
         if (Input.GetAxis("HJoystick") > 0 || Input.GetAxis("HJoystick") < 0
             || Input.GetAxis("VJoystick") > 0 || Input.GetAxis("VJoystick") < 0)
-        {
-            controller = 1;
-        }
-        else if (Input.GetButton("DJoystick"))
         {
             controller = 1;
         }
@@ -139,54 +126,28 @@ public class InputProcessor : MonoBehaviour
 
         xPoint2 = Input.GetAxis("RSXJoystick");
         yPoint2 = Input.GetAxis("RSYJoystick");
-
-        dash = Input.GetButtonDown("Dash");
-        dash2 = Input.GetButtonDown("DJoystick");
-
-        attackA = Input.GetButtonDown("Fire1");
-        attackA2 = Input.GetButtonDown("F1Joystick");
-
-        attackB = Input.GetButtonDown("Fire2");
-        attackB2 = Input.GetButtonDown("F2Joystick");
-
+        
+        attack = Input.GetButtonDown("Fire1");
+        attack2 = Input.GetButtonDown("F1Joystick");
+        
         proj = Input.GetButtonDown("Fire3");
         proj2 = Input.GetButtonDown("F3Joystick");
-
-        upgrade = Input.GetButtonDown("Upgrade");
-        upgrade2 = Input.GetButtonDown("UJoystick");
-
-        //change to buttons later
-        atkAbility = Input.GetKeyDown(KeyCode.Alpha1);
-        atkAbility2 = Input.GetKeyDown(KeyCode.Joystick1Button0);
-
-        defAbility = Input.GetKeyDown(KeyCode.Alpha2);
-        defAbility2 = Input.GetKeyDown(KeyCode.Joystick1Button1);
-
-        spdAbility = Input.GetKeyDown(KeyCode.Alpha3);
-        spdAbility2 = Input.GetKeyDown(KeyCode.Joystick1Button2);
         
-        evade = Input.GetKeyDown(KeyCode.E);
-        //upgradeShortcut = Input.GetButtonDown("Upgrade Shorcut");
-        //upgradeShorcut2 = Input.GetButtonDown("USCJoystick");
+        evade = Input.GetKeyDown("Evade");
+        evade2 = Input.GetKeyDown("EJoystick");
 
         if (controller == 0 && !PauseMenu.isGamePaused)
         {
             moveH = hDir;
             moveV = vDir;
-            moveH = new Vector2(moveH, moveV).normalized.x;
+            moveH = new Vector2(moveH, moveV).normalized.x; //might not need
             moveV = new Vector2(moveH, moveV).normalized.y;
             lookX = xPoint;
             lookY = yPoint;
-            abuttonA = attackA;
-            abuttonB = attackB;
+            abutton = attack;
             pbutton = proj;
-            dbutton = dash;
             ebutton = evade;
-            ubutton = upgrade;
-            aAbutton = atkAbility;
-            dAbutton = defAbility;
-            sAbutton = spdAbility;
-            multiValH = 1;
+            multiValH = 1; //figure out why these vars exist
             multiValV = 1;
 
             
@@ -202,14 +163,13 @@ public class InputProcessor : MonoBehaviour
         {
             moveH = hDir2;
             moveV = vDir2;
+            moveH = new Vector2(moveH, moveV).normalized.x; //might not need
+            moveV = new Vector2(moveH, moveV).normalized.y;
             lookX = xPoint2;
             lookY = yPoint2;
-            abuttonA = attackA2;
-            abuttonB = attackB2;
+            abutton = attack2;
             pbutton = proj2;
-            dbutton = dash2;
-            ubutton = upgrade2;
-            multiValH = Mathf.Abs(Input.GetAxis("HJoystick"));
+            multiValH = Mathf.Abs(Input.GetAxis("HJoystick")); //figure out why these vars exist
             multiValV = Mathf.Abs(Input.GetAxis("VJoystick"));
             JoyVector = new Vector2(lookY, lookX);
 
@@ -223,5 +183,12 @@ public class InputProcessor : MonoBehaviour
             //base look vector
             lookV = new Vector2(lookX, lookY).normalized * m;
         }
+
+        AttacAndComboInputs();
+    }
+
+    void AttacAndComboInputs()
+    {
+        // read inputs for attacks and combos and potentially reset ready variables if needed
     }
 }

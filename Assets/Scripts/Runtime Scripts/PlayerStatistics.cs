@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Stats : MonoBehaviour
+[System.Serializable]
+public class DamageTaken : UnityEvent<float> { }
+
+public class PlayerStatistics : MonoBehaviour
 {
     //public bool hitSomeone;
     public float currentHP;
@@ -20,28 +23,14 @@ public class Stats : MonoBehaviour
     [HideInInspector] public HealthBar hb;
     public DamageTaken OnDamageTaken;
     private PlayerPreset pp;
-    private EnemyPreset ep;
     private HealingItem drinks;
-    //private Animator amim;
-    [Tooltip("Only applicable if gameobject is a bullet prefab.")]public float bulletPower;
 
     void Awake()
     {
         drinks = Resources.Load<HealingItem>("Scriptable Objects/Items/Maintenance Drink");
         if (drinks.itemCount > 0) SceneData.playerHasHealingItems = true;
 
-        if (gameObject.tag == "Enemy")
-        {
-            hb = GetComponentInChildren<HealthBar>();
-            ep = Resources.Load<EnemyPreset>("Scriptable Objects/Entities/" + gameObject.name);
-            
-            hp = ep.hp;
-            hb.SetHP(hp);
-            atk = ep.atk;
-            def = ep.def;
-            baseMoveSpd = ep.baseMoveSpd;
-        }
-        else if (gameObject.tag == "Player")
+        if (gameObject.tag == "Player")
         {
 
             //put in charactercontroller
@@ -53,36 +42,19 @@ public class Stats : MonoBehaviour
             def = pp.def;
             baseMoveSpd = pp.baseMoveSpd;
         }
-        else if (gameObject.tag == "Projectile")
-        {
-            atk = bulletPower;
-        }
-        
-        if (gameObject.tag != "Projectile")
-        {
-            hb.SetHP(hp);
-            currentHP = hp;
-            //currentHP -= 50;
-            //if (gameObject.tag == "Player") hb.SubtractFromHP(currentHP, hp);
-            currentAtk = atk;
-            currentDef = def;
-            currentSpd = baseMoveSpd;
-            dead = false;
-            attackPotential = 1;
-        }
-        else
-        {
-            currentAtk = atk;
-            attackPotential = 1f;
-        }
     }
 
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
     void Update()
     {
-
-        //Debug.Log(currentAtk + ": " + gameObject.tag);
+        
     }
-    
     public void UseHealingItem()
     {
         if (drinks.itemCount > 0)
@@ -97,13 +69,13 @@ public class Stats : MonoBehaviour
             SceneData.playerHasHealingItems = false;
         }
     }
-    
+
     public void TakeDamage(float dmg)
     {
         if (dmg == 0) return;
         float d = dmg - currentDef;
         if (d <= 0) return;
-        
+
         currentHP -= (dmg - currentDef);
         if (currentHP < 0) currentHP = 0;
         hb.SubtractFromHP(currentHP, hp);

@@ -6,30 +6,21 @@ using UnityEngine.Events;
 public class ControlT : Character
 {
     //-----------------Attack and Dash Variables
-    public float[] dashScalars;
-    //public bool[] lockFrames;
-    public float[] dashWaitScalars;
     public string directionForDash;
     public string directionForAttack;
     public string directionForAbility;
     int dCount = 0;
     bool dashed = false;
-    //public bool dashAttackConnected;
-    //[HideInInspector] public Vector2 dashAttackPosition;
-    //public float dashAttackTime;
     Vector2 dashVector = Vector2.zero;
     Vector2 attackVector;
     [HideInInspector] public float attackScalar;
     [HideInInspector] public bool attackReady;
-    [HideInInspector] public bool dashReady;
     //[HideInInspector] public bool projectileReady;
     [HideInInspector] public bool dodgeReady;
     [HideInInspector] public bool abilityReady;
     bool attacked;
     [HideInInspector] public bool openWindow;
     [HideInInspector] public bool useFastAdvance;
-    private bool upgraded;
-    private bool upgrade;
     //public GameObject[] ammoCount;
 
     ObjectPooler objectPooler;
@@ -50,7 +41,6 @@ public class ControlT : Character
     //-----------------Necessary Components
     private Rigidbody2D rb;
     private InputProcessor IP;
-    private PointSystem pts;
     private Stats stats;
     private Hitbox hitbox;
     public Transform firepath;
@@ -87,7 +77,6 @@ public class ControlT : Character
         animator = GetComponent<Animator>();
         stats = GetComponent<Stats>();
         rb = GetComponent<Rigidbody2D>();
-        pts = GetComponent<PointSystem>();
         IP = GetComponent<InputProcessor>();
         hitbox = GetComponent<Hitbox>();
         col = GetComponent<CircleCollider2D>();
@@ -104,25 +93,38 @@ public class ControlT : Character
         //dashAttackPosition = Vector2.zero;
         objectPooler = ObjectPooler.Instance;
         attackReady = true;
-        dashReady = true;
         dodgeReady = true;
         abilityReady = true;
-        upgrade = false;
-        upgraded = false;
         idle = true;
         coroutineFinished = false;
         dead = false;
         //dashAttackObject.SetActive(false);
     }
 
+    //edit rb.velocity in this function
     void FixedUpdate()
     {
-        //Debug.Log(dashReady);
-        Dash();
-
-        if (dashed) rb.velocity = new Vector2(IP.movement.x, IP.movement.y);
+        /*  In this function, the player will default to a stationary pose. 
+         *    - Whenever there is no input, the player will smoothly come to a halt.
+         *          The time it will take for the player to stop will be dependent on how fast they were going.
+         *      
+         *    - All input will lead to the player moving a little bit.
+         *          The halting process will naturally cause the player to come to a stop after this.
+         *      
+         *    - Attacking, running, or even being hit will cause the player to move.
+         *          The rules around getting hit will work a bit differently, instead of the player trying to come to a stop,
+         *          the player will be knocked back and be eventually slowed down by friction if the knockback is strong
+         *          enough.
+         *      
+         *    - The basic idea is to code player movement as someone would move in a fight. It's here, where I can add some
+         *          in-game secrets about playing better.
+         *      
+         *    - A neat idea could be to allow the player to step instead of always running. This could allow them to 
+         *          position themselves very slightly in order to dodge with oncoming attacks or take advantage of an opening.
+         */
     }
 
+    //everything else pertaining to controlling the character on screen will be handled in Update and LateUpdate
     void Update()
     {
         /*
@@ -135,6 +137,7 @@ public class ControlT : Character
 
         if (!dead)
         {
+            /*
             if (stats.currentHP <= 0)
             {
                 if (!dead)
@@ -145,29 +148,10 @@ public class ControlT : Character
                 dead = true;
                 stats.dead = true;
             }
+            */
 
             DetermineDirections();
             
-            if (IP.ubutton && !upgrade && (pts.atkAUpgrade || pts.atkBUpgrade))
-            {
-                upgrade = true;
-            }
-            else if (IP.ubutton && upgrade)
-            {
-                upgrade = false;
-            }
-
-            upgradeSymbol.SetActive(upgrade);
-            
-            //amend next line so that it only checks the lowest point cost
-            if (!pts.atkAUpgrade || !pts.atkBUpgrade) upgradeSymbol.SetActive(false);
-            
-            if (IP.dAbutton)
-            {
-                animator.SetInteger("Direction", abilityDirection);
-                animator.SetTrigger("Block");
-            }
-
             AnimateAttacks();
 
             if (IP.pbutton && timeToCount == shootingWait)
@@ -180,13 +164,8 @@ public class ControlT : Character
             {
                 animator.SetTrigger("Dodge Stance");
                 dodgeReady = false;
-                dashReady = false;
                 attackReady = false;
             }
-
-            if (dashed == false && IP.dbutton == true) Dash();
-            //Debug.Log(dashReady);
-            //Debug.Log(attackScalar);
 
             //Debug.Log(stats.attackPotential);
             //IP.movement = IP.movement * stats.spdInc;
@@ -209,6 +188,7 @@ public class ControlT : Character
         //Debug.Log(dashReady);
     }
 
+    //might need to go into input manager
     public override void DetermineDirections()
     {
         
@@ -304,28 +284,16 @@ public class ControlT : Character
         }
     }
 
+    //Should go into input manager
     public override void AnimateAttacks()
     {
         
-        if (IP.abuttonA && attackReady)
+        if (IP.abutton && attackReady)
         {
-            /**/
-            if (upgrade && pts.atkAUpgrade)
-            {
-                upgraded = true;
-                pts.isPlayerUpgraded = upgraded;
-                hitbox.isPlayerUpgraded = upgraded;
-                upgrade = false;
-                pts.SubtractPoints(pts.atkACost);
-            }
-            /**/
-
             //dirState = attackDirection;
             attacked = true;
             attackReady = false;
-            dashReady = false;
             dodgeReady = false;
-            animator.SetBool("Upgrade", upgraded);
             animator.SetInteger("Direction", attackDirection);
             animator.SetTrigger("Attack A");
             if (directionForAttack == "look") attackVector = IP.lookV * attackScalar;
@@ -334,7 +302,7 @@ public class ControlT : Character
             sound.clip = clips[0];
             sound.Play();
         }
-        else if (IP.abuttonA && !attackReady && openWindow)
+        else if (IP.abutton && !attackReady && openWindow)
         {
             //stats.SetAttackPotential(0);
             attackScalar = 1;
@@ -349,32 +317,9 @@ public class ControlT : Character
             sound.Play();
         }
         
-        if (IP.abuttonB && attackReady)
-        {
-            if (upgrade && pts.atkBUpgrade)
-            {
-                upgraded = true;
-                pts.isPlayerUpgraded = upgraded;
-                hitbox.isPlayerUpgraded = upgraded;
-                upgrade = false;
-                pts.SubtractPoints(pts.atkBCost);
-            }
-            
-            //dirState = attackDirection;
-            attacked = true;
-            attackReady = false;
-            dashReady = false;
-            dodgeReady = false;
-            animator.SetBool("Upgrade", upgraded);
-            animator.SetInteger("Direction", attackDirection);
-            animator.SetTrigger("Attack B");
-            if (directionForAttack == "look") attackVector = IP.lookV * attackScalar;
-            if (directionForAttack == "move") attackVector = IP.movement * attackScalar;
-            sound.clip = clips[1];
-            sound.Play();
-        }
     }
     
+    //might also need to go into input manager
     IEnumerator ShootProjectile()
     {
 
@@ -414,173 +359,7 @@ public class ControlT : Character
         //projectileReady = true;
     }
 
-    void Dash()
-    {
-        if (IP.dbutton && dashReady)
-        {
-            /*
-            Debug.Log(dashAttackConnected);
-            if (dashAttackConnected)
-            {
-                Debug.Log("code reached?");
-                //dashAttackObject.transform.position = dashAttackPosition;
-                //dashAttackObject.SetActive(true);
-                dashAttackConnected = false;
-                pts.SubtractPoints(pts.abilityCost);
-                return;
-            }
-            */
-            
-            if (upgrade && pts.abilityUse)
-            {
-                upgrade = false;
-                upgraded = true;
-                animator.SetBool("Upgrade", upgraded);//upgrade = true
-                hitbox.isPlayerUpgraded = upgraded;
-                pts.SubtractPoints(pts.abilityCost);
-                col.isTrigger = true;
-                dashReady = false;
-            }
-
-            dashReady = false;
-            attackReady = false;
-            dodgeReady = false;
-            abilityReady = false;
-            dashed = true;
-            hitbox.hasPlayerDashed = true;
-
-            //
-            /* i dont want direction determining done here
-             * so if i can find a way to preserve the dashvector
-             * so that it's the same when the dash actually starts
-             * then i will move it back to DeterminDirections()
-             */
-            if (directionForDash == "look")
-            {
-                dashVector = IP.lookV;
-
-                //for determining the animation direction
-                if (dashVector.x < 0)
-                {
-                    dashDirection = 4;
-                }
-                else if (dashVector.x > 0)
-                {
-                    dashDirection = 3;
-                }
-                else if (dashVector.x == 0)
-                {
-                    if (dashVector.y < 0)
-                    {
-                        dashDirection = 4;
-                    }
-                    else if (dashVector.y > 0)
-                    {
-                        dashDirection = 3;
-                    }
-                }
-            }
-            else if (directionForDash == "move")
-            {
-                dashVector = IP.movement;
-
-                //for determining the animation direction
-                if (dashVector.x < 0)
-                {
-                    dashDirection = 4;
-                }
-                else if (dashVector.x > 0)
-                {
-                    dashDirection = 3;
-                }
-                else if (dashVector.x == 0)
-                {
-                    if (dashVector.y < 0)
-                    {
-                        dashDirection = 4;
-                    }
-                    else if (dashVector.y > 0)
-                    {
-                        dashDirection = 3;
-                    }
-                }
-            }
-
-            //timeTillDashUpdate = dashWait;
-            dCount = 0;
-            animator.SetInteger("Direction", dashDirection);
-            animator.SetTrigger("Dash");
-            sound.clip = clips[0];
-            sound.Play();
-        }
-
-        if (dashed)
-        {
-            /*
-            if (dCount < dashScalars.Length)
-            {
-                if (!lockFrames[dCount])
-                {
-                    dashVector = IP.movement;
-                }
-            }
-            /**/
-
-            if (dCount < dashScalars.Length) IP.movement = dashVector * dashScalars[dCount];
-            
-            dCount++;
-
-            if (dCount == dashScalars.Length)
-            {
-
-                if (upgraded)
-                {
-                    upgraded = false;
-                    animator.SetBool("Upgrade", upgraded);//upgrade = false
-                    hitbox.isPlayerUpgraded = upgraded;
-                    col.isTrigger = false;
-                }
-
-                attackReady = true;
-                dCount = 0;
-                dashed = false;
-                dashReady = true;
-                hitbox.hasPlayerDashed = false;
-            }
-
-            /*
-            if (dCount == dashScalars.Length + dashWaitScalars.Length)
-            {
-                //dCount = 0;
-                //dashed = false;
-                //dashReady = true;
-            }
-            */
-        }
-    }
-
-    /*
-    public void DashAttackSetup(Vector2 point)
-    {
-        dashAttackConnected = true;
-        dashAttackPosition = point;
-        StartCoroutine(StartCountdown());
-    }
-
-    IEnumerator StartCountdown()
-    {
-        while (dashAttackTime > 0)
-        {
-            dashAttackTime -= Time.deltaTime;
-
-            yield return null;
-        }
-        
-        dashAttackConnected = false;
-        dashAttackPosition = Vector2.zero;
-    }
-    */
-
+    //this can stay in the character controller
     public override void AnimateMovement()
     {
         int direction = 0;
@@ -696,16 +475,9 @@ public class ControlT : Character
         {
             attacked = false;
             attackReady = true;
-            dashReady = true;
             dodgeReady = true;
             abilityReady = true;
             //dashAttackConnected = false;
-            if (pts.wasAbilityUsed) pts.wasAbilityUsed = false;
-            if (upgraded)
-            {
-                upgraded = false;
-                pts.isPlayerUpgraded = upgraded;
-            }
         }
     }
 
