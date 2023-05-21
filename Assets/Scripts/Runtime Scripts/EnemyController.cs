@@ -135,7 +135,7 @@ public class EnemyController : Character, IEnemyCharacter
 
             DetermineInputs();
 
-            DetermineDirections();
+            DetermineLookDirection();
 
             AnimateAttacks();
             
@@ -254,7 +254,7 @@ public class EnemyController : Character, IEnemyCharacter
         //movement = new Vector2(xm * m, ym * m);// * moveSwitches[i];
     }
     
-    public override void DetermineDirections()
+    public override void DetermineLookDirection()
     {
         //firepath.right = (IP.tempV - transform.position) + transform.position;
 

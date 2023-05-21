@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Menu Scripts\ControlsMenu.cs" />
+    <Compile Include="Assets\Scripts\Menu Scripts\GameOverMenu.cs" />
     <Compile Include="Assets\Scripts\Menu Scripts\MainMenu.cs" />
     <Compile Include="Assets\Scripts\Menu Scripts\PauseMenu.cs" />
     <Compile Include="Assets\Scripts\Menu Scripts\SettingsMenu.cs" />
@@ -89,7 +90,6 @@
     <Compile Include="Assets\Scripts\Runtime Scripts\EnemyAssist.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\EnemyController.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\EnvironmentStatus.cs" />
-    <Compile Include="Assets\Scripts\Runtime Scripts\EventManager.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\FollowPlayer.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\HealthBar.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\Hitbox.cs" />
@@ -98,7 +98,6 @@
     <Compile Include="Assets\Scripts\Runtime Scripts\PlayerHurtbox.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\PlayerStatistics.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\ResetScene.cs" />
-    <Compile Include="Assets\Scripts\Runtime Scripts\RoomManager.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\Stats.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\TissyBlade.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />

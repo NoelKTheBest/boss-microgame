@@ -161,15 +161,15 @@ public class Hitbox : MonoBehaviour
         {
             case 0:
                 hitboxStrength = HitboxStrength.medium;
-                myStats.hb.SetBarColor(0);
+                //myStats.hb.SetBarColor(0);
                 break;
             case 1:
                 hitboxStrength = HitboxStrength.strong;
-                myStats.hb.SetBarColor(1);
+                //myStats.hb.SetBarColor(1);
                 break;
             case 2:
                 hitboxStrength = HitboxStrength.weak;
-                myStats.hb.SetBarColor(2);
+                //myStats.hb.SetBarColor(2);
                 break;
         }
     }

@@ -5,21 +5,18 @@ using UnityEngine;
 public class InputProcessor : MonoBehaviour
 {
     //PREPARE TO MAKE A REMAPPING FEATURE THAT CAN WORK FOR BOTH CURRENT PROJECTS
-    
-    
+
     [HideInInspector] public float hDir, vDir, hDir2, vDir2;
     private float xPoint, yPoint, xPoint2, yPoint2;
     [HideInInspector] public float moveH, moveV, lookX, lookY;
-    private bool attack, attack2, proj, proj2, evade, evade2;
-    [HideInInspector] public bool abutton, pbutton, ebutton;
+    private bool attack, attack2, proj, proj2, dash, dash2;//, evade, evade2;
+    [HideInInspector] public bool abutton, pbutton, dbutton;
     [HideInInspector] public static bool pressedPause;
     [HideInInspector] public Vector2 movement;
     [HideInInspector] public Vector2 lookV;
     [HideInInspector] public Vector3 tempV;
     private Camera cam;
     [HideInInspector] public int controller;
-    [HideInInspector] public float m;
-    [HideInInspector] public float multiValH, multiValV;
     private Hitbox hb;
     Vector2 JoyVector;
     
@@ -27,23 +24,15 @@ public class InputProcessor : MonoBehaviour
     {
         cam = FindObjectOfType<Camera>().GetComponent<Camera>();
         hb = GetComponent<Hitbox>();
-        //m = stats.baseMoveSpd;
     }
-
-    void Start()
-    {
-        multiValH = 1;
-        multiValV = 1;
-    }
-
+    
     void Update()
     {
-        //m = stats.baseMoveSpd;
         tempV = CalculatePlayerMouseVector();
         ProcessInputs();
-        //AttacAndComboInputs();
     }
 
+    // REVIEW THIS FUNCTION. It would be interesting to know how this funciton works.
     //method to calculate mouse direction relative to the player
     Vector3 CalculatePlayerMouseVector()
     {
@@ -132,63 +121,53 @@ public class InputProcessor : MonoBehaviour
         
         proj = Input.GetButtonDown("Fire3");
         proj2 = Input.GetButtonDown("F3Joystick");
-        
-        evade = Input.GetKeyDown("Evade");
-        evade2 = Input.GetKeyDown("EJoystick");
+
+        dash = Input.GetButtonDown("Dash");
+        dash2 = Input.GetButtonDown("DJoystick");
+
+        //evade = Input.GetKeyDown("Evade");
+        //evade2 = Input.GetKeyDown("EJoystick");
 
         if (controller == 0 && !PauseMenu.isGamePaused)
         {
-            moveH = hDir;
-            moveV = vDir;
-            moveH = new Vector2(moveH, moveV).normalized.x; //might not need
-            moveV = new Vector2(moveH, moveV).normalized.y;
+            moveH = new Vector2(hDir, vDir).normalized.x;
+            moveV = new Vector2(hDir, vDir).normalized.y;
             lookX = xPoint;
             lookY = yPoint;
             abutton = attack;
             pbutton = proj;
-            ebutton = evade;
-            multiValH = 1; //figure out why these vars exist
-            multiValV = 1;
-
+            dbutton = dash;
+            //ebutton = evade;
             
             //The components of these vectors can be used interchangeably with each other, 
             //but not with the variables that make up the vectors.
             //base movement vector
-            movement = new Vector2(moveH, moveV).normalized * m;
-
+            movement = new Vector2(moveH, moveV).normalized;
+            
             //base look vector
-            lookV = new Vector2(lookX, lookY).normalized * m;
+            lookV = new Vector2(lookX, lookY).normalized;
         }
         else if (controller == 1 && !PauseMenu.isGamePaused)
         {
-            moveH = hDir2;
-            moveV = vDir2;
-            moveH = new Vector2(moveH, moveV).normalized.x; //might not need
-            moveV = new Vector2(moveH, moveV).normalized.y;
+            moveH = new Vector2(hDir2, vDir2).normalized.x;
+            moveV = new Vector2(hDir2, vDir2).normalized.y;
             lookX = xPoint2;
             lookY = yPoint2;
             abutton = attack2;
             pbutton = proj2;
-            multiValH = Mathf.Abs(Input.GetAxis("HJoystick")); //figure out why these vars exist
-            multiValV = Mathf.Abs(Input.GetAxis("VJoystick"));
+            dbutton = dash2;
             JoyVector = new Vector2(lookY, lookX);
-
-            //test later:
-            //Debug.Log(new Vector2(moveH, moveV));
-            //Debug.Log(new Vector2(moveH, moveV).normalized);
-
+            
             //base movement vector
-            movement = new Vector2(moveH, moveV).normalized * m;//might not need to be normalized for joystick controls
-
+            movement = new Vector2(moveH, moveV).normalized;//might not need to be normalized for joystick controls
+            
             //base look vector
-            lookV = new Vector2(lookX, lookY).normalized * m;
+            lookV = new Vector2(lookX, lookY).normalized;
         }
 
-        AttacAndComboInputs();
-    }
+        //Debug.Log("moveH: " + moveH + ", moveV: " + moveV + "" );
 
-    void AttacAndComboInputs()
-    {
-        // read inputs for attacks and combos and potentially reset ready variables if needed
+        //if (movement != Vector2.zero) Debug.Log("not the same!");
+        //if (movement == Vector2.zero) Debug.Log("the same!");
     }
 }

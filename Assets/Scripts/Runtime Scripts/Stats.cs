@@ -48,7 +48,7 @@ public class Stats : MonoBehaviour
             pp = Resources.Load<PlayerPreset>("Scriptable Objects/Entities/" + gameObject.name);
 
             hp = pp.hp;
-            hb.SetHP(100);
+            //hb.SetHP(100);
             atk = pp.atk;
             def = pp.def;
             baseMoveSpd = pp.baseMoveSpd;
@@ -60,7 +60,7 @@ public class Stats : MonoBehaviour
         
         if (gameObject.tag != "Projectile")
         {
-            hb.SetHP(hp);
+            //hb.SetHP(hp);
             currentHP = hp;
             //currentHP -= 50;
             //if (gameObject.tag == "Player") hb.SubtractFromHP(currentHP, hp);

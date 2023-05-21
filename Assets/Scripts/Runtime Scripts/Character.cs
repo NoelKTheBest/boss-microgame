@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Character : MonoBehaviour
 {
-    public abstract void DetermineDirections();
+    public abstract void DetermineLookDirection();
     public abstract void ResetVars();
     public abstract void AnimateAttacks();
     public abstract void AnimateMovement();
