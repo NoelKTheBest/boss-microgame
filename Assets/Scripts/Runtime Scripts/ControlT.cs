@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ControlT : Character
+public class ControlT : MonoBehaviour
 {
     // I forgot that this class doesn't directly inherit from Monobehaviour
     // Considering that the class is somewhat generic, I will leave it alone
@@ -76,7 +76,7 @@ public class ControlT : Character
     public Transform firepath;
     private Rigidbody2D rb;
     private InputProcessor IP;
-    private Stats stats;
+    private PlayerStatistics stats;
     private Hitbox hitbox;
     private PlayerHurtbox hurtbox;
     private Animator animator;
@@ -84,7 +84,8 @@ public class ControlT : Character
 
 
     //-----------------Other
-    bool dead;
+    [Header("Other")]
+    public bool testingHurtbox;
 
     //-----------------Direction Variables
     //do something about all of these direction variables
@@ -104,7 +105,7 @@ public class ControlT : Character
         //sound = GetComponentInChildren<AudioSource>();
         //dashAttackScript = GetComponentInChildren<ForDashMechanic>();
         animator = GetComponent<Animator>();
-        stats = GetComponent<Stats>();
+        stats = GetComponent<PlayerStatistics>();
         rb = GetComponent<Rigidbody2D>();
         IP = GetComponent<InputProcessor>();
         hitbox = GetComponent<Hitbox>();
@@ -127,7 +128,6 @@ public class ControlT : Character
         //abilityReady = true;
         idle = true;
         //coroutineFinished = false;
-        dead = false;
         //dashAttackObject.SetActive(false);
     }
 
@@ -161,7 +161,7 @@ public class ControlT : Character
 
 
         //Debug.Log("dashed: " + dashed + ", attacked: " + attacked);
-        Debug.Log(rb.velocity);
+        //Debug.Log(rb.velocity);
 
         if (dashed)
         {
@@ -169,12 +169,13 @@ public class ControlT : Character
         }
 
         if (!dashed && !attacked) rb.velocity = new Vector2(IP.movement.x, IP.movement.y) * moveSpeed;
+        if (!dashed && attacked) rb.velocity = new Vector2(IP.movement.x, IP.movement.y) * attackVector;
     }
 
     //everything else pertaining to controlling the character on screen will be handled in Update and LateUpdate
     void Update()
     {
-        if (!dead)
+        if (!stats.dead)
         {
             /*
             if (stats.currentHP <= 0)
@@ -193,7 +194,7 @@ public class ControlT : Character
             //  on the input device used
             // if (IP.controller == 0) directionForAttack = "look"
             // else if (IP.controller == 1) directionForAttack = "move"
-
+            
             DetermineLookDirection();
             
             AnimateAttacks();
@@ -213,11 +214,13 @@ public class ControlT : Character
             // now in fixedupdate
             // if we didn't dash, we were not hit, and we didn't attack somebody then we move normally
             //if (!dashed && !hitbox.wasHit && !attacked) rb.velocity = new Vector2(IP.movement.x * IP.multiValH, 
-              //  IP.movement.y * IP.multiValV) * attackScalar * Time.timeScale;
+            //  IP.movement.y * IP.multiValV) * attackScalar * Time.timeScale;
 
             //might delete
             //if (!dashed && !hitbox.wasHit && attacked) rb.velocity = new Vector2(attackVector.x * IP.multiValH,
-              //  attackVector.y * IP.multiValV) * attackScalar * Time.timeScale;
+            //  attackVector.y * IP.multiValV) * attackScalar * Time.timeScale;
+
+            //Debug.Log(testingHurtbox);
 
             if (!dashed && !attacked && !hitbox.wasHit)
             {
@@ -232,7 +235,7 @@ public class ControlT : Character
 
     //might need to go into input manager
     // DO NOT CHANGE THIS FUNCTION !!
-    public override void DetermineLookDirection()
+    public void DetermineLookDirection()
     {
         
         //firepath.right = (IP.tempV - transform.position) + transform.position;
@@ -328,7 +331,7 @@ public class ControlT : Character
         */
     }
     
-    public override void AnimateAttacks()
+    public void AnimateAttacks()
     {
         // I want to put this into the InputProcessor.cs, but
         //  I don't really need to have multiple references to
@@ -342,7 +345,7 @@ public class ControlT : Character
         //  overrides an abstract method from a class that
         //  InputProcessor.cs doesn't inherit from.
 
-        if (IP.abutton && attackReady)
+        if (IP.abutton && attackReady && !testingHurtbox)
         {
             //dirState = attackDirection;
             attacked = true;
@@ -352,9 +355,9 @@ public class ControlT : Character
             animator.SetTrigger("Attack A");
             if (directionForAttack == "look") attackVector = IP.lookV * attackScalar;
             if (directionForAttack == "move") attackVector = IP.movement * attackScalar;
-            Debug.Log(attackScalar);
+            //Debug.Log(attackScalar);
         }
-        else if (IP.abutton && !attackReady && openWindow)
+        else if (IP.abutton && !attackReady && !testingHurtbox && openWindow)
         {
             //stats.SetAttackPotential(0);
             attackScalar = 1;
@@ -364,7 +367,7 @@ public class ControlT : Character
             animator.SetTrigger("Combo");
             if (directionForAttack == "look") attackVector = IP.lookV * attackScalar;
             if (directionForAttack == "move") attackVector = IP.movement * attackScalar;
-            Debug.Log(attackScalar);
+            //Debug.Log(attackScalar);
         }
         
     }
@@ -495,7 +498,7 @@ public class ControlT : Character
         //projectileReady = true;
     }
     
-    public override void AnimateMovement()
+    public void AnimateMovement()
     {
         // review this script
 
@@ -645,7 +648,7 @@ public class ControlT : Character
     }
     
     //maybe reset direction var here using dirstate?
-    public override void ResetVars()
+    public void ResetVars()
     {
         //make sure that resetvars is only called at the end of animations or at the beginning
         //dashAttackObject.transform.position = Vector2.zero;
@@ -658,9 +661,9 @@ public class ControlT : Character
         }
     }
 
-    public override void AnimateDamage(Vector2 a)
+    public void AnimateDamage(Vector2 a)
     {
-        if (!dead)
+        if (!stats.dead)
         {
             //for later:
             //setup dash to not be available when getting hit
@@ -676,13 +679,13 @@ public class ControlT : Character
             moveDirection = direction;
             animator.SetInteger("Direction", direction);
             animator.SetTrigger("Hit");
-            rb.velocity = a * hitbox.forceOfAttack;
+            rb.velocity = a * stats.force;
             //sound.clip = clips[2];
             //sound.Play();
         }
     }
 
-    public override void Die()
+    public void Die()
     {
         animator.SetInteger("Direction", dirState);//might change dirState
         animator.SetTrigger("Dead");

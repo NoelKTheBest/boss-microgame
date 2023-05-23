@@ -16,45 +16,21 @@ public class PlayerStatistics : MonoBehaviour
     private float hp;//100
     private float atk;//50
     private float def;//30
-    [HideInInspector] public float baseMoveSpd;
     public bool dead;
     [HideInInspector] public float attackPotential;
     [HideInInspector] public float force;
     [HideInInspector] public HealthBar hb;
     public DamageTaken OnDamageTaken;
-    private PlayerPreset pp;
-    private HealingItem drinks;
+    //private HealingItem drinks;
 
+    #region For Healing
+    /*
     void Awake()
     {
-        drinks = Resources.Load<HealingItem>("Scriptable Objects/Items/Maintenance Drink");
-        if (drinks.itemCount > 0) SceneData.playerHasHealingItems = true;
-
-        if (gameObject.tag == "Player")
-        {
-
-            //put in charactercontroller
-            pp = Resources.Load<PlayerPreset>("Scriptable Objects/Entities/" + gameObject.name);
-
-            hp = pp.hp;
-            hb.SetHP(100);
-            atk = pp.atk;
-            def = pp.def;
-            baseMoveSpd = pp.baseMoveSpd;
-        }
+        //drinks = Resources.Load<HealingItem>("Scriptable Objects/Items/Maintenance Drink");
+        //if (drinks.itemCount > 0) SceneData.playerHasHealingItems = true;
     }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
     public void UseHealingItem()
     {
         if (drinks.itemCount > 0)
@@ -67,6 +43,16 @@ public class PlayerStatistics : MonoBehaviour
         if (drinks.itemCount == 0)
         {
             SceneData.playerHasHealingItems = false;
+        }
+    }
+    */
+    #endregion
+
+    void Update()
+    {
+        if (currentHP < 0)
+        {
+            dead = true;
         }
     }
 
@@ -84,5 +70,10 @@ public class PlayerStatistics : MonoBehaviour
         {
             OnDamageTaken.Invoke(dmg);
         }
+    }
+
+    public void ApplyKnockback(float magnitude, Vector2 direction)
+    {
+        // Apply knockback to player
     }
 }

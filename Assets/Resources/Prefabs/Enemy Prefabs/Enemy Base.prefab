@@ -197,8 +197,6 @@ GameObject:
   - component: {fileID: 7969617953627231674}
   - component: {fileID: 7969617953627231623}
   - component: {fileID: 7969617953627231622}
-  - component: {fileID: 7969617953627231621}
-  - component: {fileID: 8568829646864203213}
   - component: {fileID: 4895670882517676380}
   m_Layer: 0
   m_Name: Enemy Base
@@ -328,69 +326,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &7969617953627231621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7969617953627231620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec5241b18a96d11458e4cfebc572c570, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tip: 
-  clips: []
-  attackReady: 0
-  dashReady: 0
-  dashScalars: []
-  dashWaitScalars: []
-  shootingWait: 0
-  targetPos: {fileID: 0}
-  firePath: {fileID: 0}
-  tempV: {x: 0, y: 0, z: 0}
-  radius1: 0
-  radius2: 0
-  radius3: 0
-  radius4: 0
-  radiusOffset: 0
-  detectionCenter: {x: -60.816452, y: 24.78}
-  centerOffset: {x: 0, y: 0}
-  animCenterOffset: {x: 0, y: 0}
-  attackScalar: 1
-  attackTimes: 00000000
-  animNumbers: 01000000020000000300000004000000
-  dashTimes: 00000000
-  movementMultipliers: []
-  shootTimes: 00000000
---- !u!114 &8568829646864203213
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7969617953627231620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8f05ad8692e1444ca5356eaae9fda2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHP: 0
-  currentAtk: 0
-  currentDef: 0
-  currentSpd: 0
-  baseMoveSpd: 0
-  dead: 0
-  attackPotential: 0
-  force: 0
-  hb: {fileID: 0}
-  p: {fileID: 0}
-  OnDamageTaken:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: DamageTaken, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  bulletPower: 0
 --- !u!114 &4895670882517676380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,14 +339,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wasHit: 0
-  blockHealth: 0
-  blockDefense: 0
+  hasPlayerDashed: 0
   hitboxHealth: 10000
   hitboxDefense: 100
   hbStrongMultiplier: 0.9
   hbWeakMultiplier: 1.1
   forceOfAttack: 0
-  isPlayerUpgraded: 0
   hitByProjectile: 0
   myStats: {fileID: 0}
   OnHitDetected:
@@ -429,20 +362,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 0
     m_TypeName: HitDetected, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnBlockHitDetected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: BlockHitDetected, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnDodgeHitDetected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: DodgeDetected, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
   hitboxPoint: {x: -50.63, y: 29.06}
   hitboxOffset: {x: 0, y: 0}
   hitboxSize: {x: 0, y: 0}
   animHitboxOffset: {x: 0, y: 0}
   hitboxSizeOffset: {x: 0, y: 0}
-  hitboxType: 0
   hitboxStrength: 0

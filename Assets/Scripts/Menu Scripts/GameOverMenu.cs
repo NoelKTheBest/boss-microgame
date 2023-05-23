@@ -5,19 +5,32 @@ using UnityEngine.SceneManagement;
 
 public class GameOverMenu : MonoBehaviour
 {
+    public static bool gameOver;
+    public PlayerStatistics playerStats;
+    public GameObject winScreen;
+    public GameObject loseScreen;
+
+    void Update()
+    {
+        if (playerStats.dead)
+        {
+            gameOver = true;
+        }
+    }
+
     public void DisplayWinScreen()
     {
-        // Display screen for winning
+        winScreen.SetActive(true);
     }
 
     public void DisplayLoseScreen()
     {
-        // Display screen for game over
+        loseScreen.SetActive(true);
     }
 
     public void RestartGame()
     {
-        // Reload Scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void BackToMainMenu()

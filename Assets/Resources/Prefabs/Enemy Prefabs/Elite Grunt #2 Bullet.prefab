@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 7432053751873295729}
   - component: {fileID: 8066000418852914366}
   - component: {fileID: 8220478657214091900}
-  - component: {fileID: 307856030897861136}
   - component: {fileID: 3507985126671188627}
   - component: {fileID: 5438564715589780068}
   m_Layer: 9
@@ -83,7 +82,7 @@ SpriteRenderer:
   m_Size: {x: 4.1666665, y: 4.1666665}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &8066000418852914366
@@ -133,33 +132,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &307856030897861136
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7432053751873295730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8f05ad8692e1444ca5356eaae9fda2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHP: 0
-  currentAtk: 0
-  currentDef: 0
-  currentSpd: 0
-  baseMoveSpd: 0
-  dead: 0
-  attackPotential: 0
-  force: 0
-  hb: {fileID: 0}
-  p: {fileID: 0}
-  OnDamageTaken:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: DamageTaken, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  bulletPower: 50
 --- !u!114 &3507985126671188627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,40 +160,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wasHit: 0
-  blockHealth: 0
-  blockDefense: 0
+  hasPlayerDashed: 0
   hitboxHealth: 0
   hitboxDefense: 0
   hbStrongMultiplier: 0
   hbWeakMultiplier: 0
   forceOfAttack: 0
-  isPlayerUpgraded: 0
-  hasPlayerDashed: 0
   hitByProjectile: 0
   myStats: {fileID: 0}
   OnHitDetected:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: HitDetected, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnBlockHitDetected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: BlockHitDetected, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnDodgeHitDetected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: DodgeDetected, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnDashAttackConnected:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   hitboxPoint: {x: -3.61, y: -0.94}
   hitboxOffset: {x: 0, y: 0}
   hitboxSize: {x: 0, y: 0}
   animHitboxOffset: {x: 0, y: 0}
   hitboxSizeOffset: {x: 0, y: 0}
-  hitboxType: 0
   hitboxStrength: 0

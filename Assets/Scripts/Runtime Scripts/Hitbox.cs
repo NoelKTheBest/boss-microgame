@@ -17,17 +17,11 @@ public class DashAttackConnected : UnityEvent<Vector2> { }
 public class Hitbox : MonoBehaviour
 {
     [HideInInspector] public bool wasHit;
-    public bool hasPlayerDashed;
     private bool checkForNoContact;
-    private float currentBlockHealth;//and this //might need to be public
     public float hitboxHealth;//and this
     private float currenthitboxHealth;//and this
-    public float hitboxDefense;//and this
-    public float hbStrongMultiplier;//and this
-    public float hbWeakMultiplier;//and this
-    [HideInInspector] public float forceOfAttack;
     public bool hitByProjectile;
-    [HideInInspector] public Stats myStats;
+    [HideInInspector] public PlayerStatistics myStats;
     private Rigidbody2D rb;
     public HitDetected OnHitDetected;
     private Vector2 hitDirection;
@@ -47,7 +41,7 @@ public class Hitbox : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        myStats = GetComponent<Stats>();
+        //myStats = GetComponent<Stats>();
         //anim = GetComponent<Animator>();
         wasHit = false;
         checkForNoContact = false;
@@ -78,6 +72,7 @@ public class Hitbox : MonoBehaviour
         if (gameObject.tag == "Player")
         {
             collider2 = Physics2D.OverlapBox(hitboxPoint, hitboxSize + hitboxSizeOffset, 0, mask2);
+            //Debug.Log(collider2); - mouse hitbox detected when collider is enabled
         }
 
         if (wasHit == false && collider1 != null && gameObject.tag == "Enemy")
@@ -88,10 +83,8 @@ public class Hitbox : MonoBehaviour
 
             //finding the hitbox component of the boss might be fine, but i need to ditch the stats class
             Hitbox hb = collider1.GetComponentInParent<Hitbox>();
-            Stats stats = hb.myStats; //I want to get rid of this
+            PlayerStatistics stats = hb.myStats; // Delete this later
             Vector2 attackVector = transform.position - collider1.transform.position;
-            forceOfAttack = stats.force;
-            //Debug.Log(stats.currentAtk);
 
             if (hb.gameObject.tag == "Projectile") hitByProjectile = true;
 
@@ -101,15 +94,14 @@ public class Hitbox : MonoBehaviour
                     hbMultiplier = 1;
                     break;
                 case HitboxStrength.strong:
-                    hbMultiplier = hbStrongMultiplier;
+                    hbMultiplier = 1;
                     break;
                 case HitboxStrength.weak:
-                    hbMultiplier = hbWeakMultiplier;
+                    hbMultiplier = 1;
                     break;
             }
 
             rb.velocity = attackVector * (stats.force);
-            //Debug.Log(stats.attackPotential);
             Debug.Log(((stats.currentAtk * stats.attackPotential) + b) * hbMultiplier);
             myStats.TakeDamage(((stats.currentAtk * stats.attackPotential) + b) * hbMultiplier);
             if (OnHitDetected != null) OnHitDetected.Invoke(attackVector);
@@ -122,9 +114,9 @@ public class Hitbox : MonoBehaviour
             wasHit = true;
 
             Hitbox hb = collider2.GetComponentInParent<Hitbox>();
-            Stats stats = hb.myStats;
+            //Debug.Log(hb); - no hitbox detected, no damage done
+            PlayerStatistics stats = hb.myStats; // Delete this later
             Vector2 a = transform.position - collider2.transform.position;
-            forceOfAttack = stats.force;
 
             if (hb.gameObject.tag == "Projectile") hitByProjectile = true;
 

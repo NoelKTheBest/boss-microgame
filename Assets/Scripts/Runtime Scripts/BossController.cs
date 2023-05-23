@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //break up this class by enemy type later on
-public class EnemyController : Character, IEnemyCharacter
+public class BossController : MonoBehaviour
 {
     [Tooltip("Proximity Range Order is as they appear in the array for all properties")]public string tip;
     private bool dbutton, abutton, sbutton;
@@ -13,7 +13,7 @@ public class EnemyController : Character, IEnemyCharacter
     private CircleCollider2D col;
     private Rigidbody2D rb;
     private Hitbox hitbox;
-    private Stats stats;
+    private BossStatistics stats;
     private AudioSource sound;
     public AudioClip[] clips;
     private float multiValH, multiValV;
@@ -73,7 +73,7 @@ public class EnemyController : Character, IEnemyCharacter
         dead = false;
         attackReady = true;
         dashReady = true;
-        stats = GetComponent<Stats>();
+        stats = GetComponent<BossStatistics>();
         animator = GetComponent<Animator>();
         hitbox = GetComponent<Hitbox>();
         rb = GetComponent<Rigidbody2D>();
@@ -202,7 +202,7 @@ public class EnemyController : Character, IEnemyCharacter
             dbutton = dashTimes[j];
             movementMultiplier = movementMultipliers[j];
             sbutton = shootTimes[j];
-            movement = lookVector.normalized * stats.baseMoveSpd * attackScalar * movementMultiplier;
+            movement = lookVector.normalized * 1 * attackScalar * movementMultiplier;
         }
         else if (lookVector.magnitude <= (radius2 + radiusOffset) && !PauseMenu.isGamePaused)
         {
@@ -212,7 +212,7 @@ public class EnemyController : Character, IEnemyCharacter
             dbutton = dashTimes[j];
             movementMultiplier = movementMultipliers[j];
             sbutton = shootTimes[j];
-            movement = lookVector.normalized * stats.baseMoveSpd * attackScalar * movementMultiplier;
+            movement = lookVector.normalized * 1 * attackScalar * movementMultiplier;
         }
         else if (lookVector.magnitude <= (radius3 + radiusOffset) && !PauseMenu.isGamePaused)
         {
@@ -222,7 +222,7 @@ public class EnemyController : Character, IEnemyCharacter
             dbutton = dashTimes[j];
             movementMultiplier = movementMultipliers[j];
             sbutton = shootTimes[j];
-            movement = lookVector.normalized * stats.baseMoveSpd * attackScalar * movementMultiplier;
+            movement = lookVector.normalized * 1 * attackScalar * movementMultiplier;
         }
         else if (lookVector.magnitude <= (radius4 + radiusOffset) && !PauseMenu.isGamePaused)
         {
@@ -232,7 +232,7 @@ public class EnemyController : Character, IEnemyCharacter
             dbutton = dashTimes[j];
             movementMultiplier = movementMultipliers[j];
             sbutton = shootTimes[j];
-            movement = lookVector.normalized * stats.baseMoveSpd * attackScalar * movementMultiplier;
+            movement = lookVector.normalized * 1 * attackScalar * movementMultiplier;
         }
         else
         {
@@ -254,7 +254,7 @@ public class EnemyController : Character, IEnemyCharacter
         //movement = new Vector2(xm * m, ym * m);// * moveSwitches[i];
     }
     
-    public override void DetermineLookDirection()
+    public void DetermineLookDirection()
     {
         //firepath.right = (IP.tempV - transform.position) + transform.position;
 
@@ -379,7 +379,7 @@ public class EnemyController : Character, IEnemyCharacter
         timeToCount = shootingWait;
     }
 
-    public override void AnimateAttacks()
+    public void AnimateAttacks()
     {
         if (abutton && attackReady)
         {
@@ -395,7 +395,7 @@ public class EnemyController : Character, IEnemyCharacter
         
     }
 
-    public override void AnimateMovement()
+    public void AnimateMovement()
     {
         int direction = 0;
 
@@ -425,7 +425,7 @@ public class EnemyController : Character, IEnemyCharacter
         animator.SetBool("Moving", moving);
     }
 
-    public override void ResetVars()
+    public void ResetVars()
     {
         if (attacked)
         {
@@ -436,7 +436,7 @@ public class EnemyController : Character, IEnemyCharacter
         }
     }
     
-    public override void AnimateDamage(Vector2 a)
+    public void AnimateDamage(Vector2 a)
     {
         if (!dead)
         {
@@ -452,13 +452,13 @@ public class EnemyController : Character, IEnemyCharacter
             dirState = direction;
             animator.SetInteger("Direction", direction);
             animator.SetTrigger("Hit");
-            rb.velocity = a * hitbox.forceOfAttack;
+            rb.velocity = a * stats.force;
             sound.clip = clips[2];
             sound.Play();
         }
     }
 
-    public override void Die()
+    public void Die()
     {
         animator.SetInteger("Direction", dirState);
         animator.SetTrigger("Dead");
