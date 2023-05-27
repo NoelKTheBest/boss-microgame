@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class MouseHitbox : MonoBehaviour
 {
-    public ControlT player;
+    public PlayerController player;
 
     public GameObject playerTestHitbox;
     public GameObject enemyTestHitbox;

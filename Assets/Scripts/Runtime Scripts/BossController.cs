@@ -80,7 +80,7 @@ public class BossController : MonoBehaviour
         col = GetComponent<CircleCollider2D>();
         cam = FindObjectOfType<Camera>().GetComponent<Camera>();
         sound = GetComponentInChildren<AudioSource>();
-        targetPos = FindObjectOfType<ControlT>().transform;
+        targetPos = FindObjectOfType<PlayerController>().transform;
         //contactFilter.layerMask = 10;
         //contactFilter.useLayerMask = true;
         //contactFilter.useNormalAngle = false;

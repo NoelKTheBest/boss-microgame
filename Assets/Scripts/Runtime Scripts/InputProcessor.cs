@@ -9,7 +9,7 @@ public class InputProcessor : MonoBehaviour
     [HideInInspector] public float hDir, vDir, hDir2, vDir2;
     private float xPoint, yPoint, xPoint2, yPoint2;
     [HideInInspector] public float moveH, moveV, lookX, lookY;
-    private bool attack, attack2, proj, proj2, dash, dash2;//, evade, evade2;
+    private bool attack, attack2, proj, proj2, dash, dash2;
     [HideInInspector] public bool abutton, pbutton, dbutton;
     [HideInInspector] public static bool pressedPause;
     [HideInInspector] public Vector2 movement;
@@ -33,7 +33,7 @@ public class InputProcessor : MonoBehaviour
     }
 
     // REVIEW THIS FUNCTION. It would be interesting to know how this funciton works.
-    //method to calculate mouse direction relative to the player
+    // method to calculate mouse direction relative to the player
     Vector3 CalculatePlayerMouseVector()
     {
         Vector3 playerScreenCoord = cam.WorldToScreenPoint(transform.position);
@@ -72,8 +72,8 @@ public class InputProcessor : MonoBehaviour
     
     public void ProcessInputs()
     {
-        //These if statements are for determining whether we are dealing with a 
-        //controller or keyboard in single player mode or online multiplayer
+        // These if statements are for determining whether we are dealing with a 
+        //  controller or keyboard in single player mode or online multiplayer
         if (Input.GetAxisRaw("Horizontal") == 1 || Input.GetAxisRaw("Horizontal") == -1
             || Input.GetAxisRaw("Vertical") == 1 || Input.GetAxisRaw("Vertical") == -1)
         {
@@ -124,10 +124,8 @@ public class InputProcessor : MonoBehaviour
 
         dash = Input.GetButtonDown("Dash");
         dash2 = Input.GetButtonDown("DJoystick");
-
-        //evade = Input.GetKeyDown("Evade");
-        //evade2 = Input.GetKeyDown("EJoystick");
-
+        
+        // movement and look vectors normalized and tested
         if (controller == 0 && !PauseMenu.isGamePaused)
         {
             moveH = new Vector2(hDir, vDir).normalized.x;
@@ -137,37 +135,37 @@ public class InputProcessor : MonoBehaviour
             abutton = attack;
             pbutton = proj;
             dbutton = dash;
-            //ebutton = evade;
+
+            // The components of these vectors can be used interchangeably with each other, 
+            //  but not with the variables that make up the vectors.
+
+            // base movement vector
+            // vector components already normalized
+            movement = new Vector2(moveH, moveV);
             
-            //The components of these vectors can be used interchangeably with each other, 
-            //but not with the variables that make up the vectors.
-            //base movement vector
-            movement = new Vector2(moveH, moveV).normalized;
-            
-            //base look vector
-            lookV = new Vector2(lookX, lookY).normalized;
+            // base look vector
+            // vector components already normalized
+            lookV = new Vector2(lookX, lookY);
         }
+        // movement and look vectors normalized and tested
         else if (controller == 1 && !PauseMenu.isGamePaused)
         {
             moveH = new Vector2(hDir2, vDir2).normalized.x;
             moveV = new Vector2(hDir2, vDir2).normalized.y;
-            lookX = xPoint2;
-            lookY = yPoint2;
+            lookX = new Vector2(xPoint2, yPoint2).normalized.x;
+            lookY = new Vector2(xPoint2, yPoint2).normalized.y;
             abutton = attack2;
             pbutton = proj2;
             dbutton = dash2;
-            JoyVector = new Vector2(lookY, lookX);
+            //JoyVector = new Vector2(lookY, lookX).normalized; - i don't know what this is for
             
-            //base movement vector
-            movement = new Vector2(moveH, moveV).normalized;//might not need to be normalized for joystick controls
-            
-            //base look vector
-            lookV = new Vector2(lookX, lookY).normalized;
+            // base movement vector
+            // vector components already normalized
+            movement = new Vector2(moveH, moveV);
+
+            // base look vector
+            // vector components already normalized
+            lookV = new Vector2(lookX, lookY);
         }
-
-        //Debug.Log("moveH: " + moveH + ", moveV: " + moveV + "" );
-
-        //if (movement != Vector2.zero) Debug.Log("not the same!");
-        //if (movement == Vector2.zero) Debug.Log("the same!");
     }
 }

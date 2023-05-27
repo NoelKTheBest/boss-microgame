@@ -3,60 +3,59 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ControlT : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     // I forgot that this class doesn't directly inherit from Monobehaviour
     // Considering that the class is somewhat generic, I will leave it alone
 
     //---Fields for movement
-    [Header("Fields for movement")]
     public float speed;
     float moveSpeed;
 
-    //-----------------Attack Variables
-    [Header("Attack Variables")]
-    [Tooltip("This value lets you override the input for the direction of the attack for testing purposes")]
+    //---Fields for Attack---------------------------
     public string attackDirectionOverride = "none";
     public string directionForAttack;
     Vector2 orientationVector;
     Vector2 attackVector;
-    [HideInInspector] public float attackScalar;
-    [HideInInspector] public bool attackReady;
+    public bool attackReady;
     bool attacked;
-    [HideInInspector] public bool openWindow;
-    [HideInInspector] public bool useFastAdvance;
+    public bool openWindow;
+    public bool useFastAdvance;
     //public GameObject[] ammoCount;
 
-    //---Fields for dashing
-    [Header("Dash Variables")]
-    [Tooltip("This value lets you override the input for the direction of the dash for testing purposes")]
+    //---Fields for Attack Movement & Step-----------
+    public string stepDirectionOverride;
+    public string directionForStep;
+    Vector2 stepVector;
+    public float attackScalar;
+    public bool isStepping;
+    private bool canStep = true;
+    bool stepped = false;
+    public float stepTime;
+    public float stepCooldown;
+    public float stepSpeed;
+
+    //---Fields for dashing--------------------------
     public string dashDirectionOverride = "none";
     public string directionForDash;
     public bool isDashing;
     private bool canDash = true;
     bool dashed = false;
-
-    [Header("   Acceleration")]
+    
     public float accelTime;
-    [Tooltip("The amount that acceleration increments")]
     public float accelAmount;
-    //[Tooltip("The current acceleration speed")]
     private float dashAccel;
 
-    [Header("   Main Dash")]
+    public float totalDashTime;
     public float dashTime;
     public float dashCooldown;
     public float dashSpeed;
-
-    [Header("   Deceleration")]
+    
     public float decelTime;
-    [Tooltip("The amount that deceleration decrements")]
     public float decelAmount;
-    //[Tooltip("The current deceleration speed")]
     private float dashDecel;
 
-    //---Fields for projectiles
-    [Header("Projectile Variables")]
+    //---Fields for projectiles----------------------
     public float shootingWait;
     ObjectPooler objectPooler;
     private float timeToCount;
@@ -71,8 +70,7 @@ public class ControlT : MonoBehaviour
     //private float frameTimeCopy;
     //bool coroutineFinished;
 
-    //-----------------Necessary Components
-    [Header("Components")]
+    //---Components----------------------------------
     public Transform firepath;
     private Rigidbody2D rb;
     private InputProcessor IP;
@@ -83,11 +81,10 @@ public class ControlT : MonoBehaviour
     private CircleCollider2D col;
 
 
-    //-----------------Other
-    [Header("Other")]
+    //---Other---------------------------------------
     public bool testingHurtbox;
 
-    //-----------------Direction Variables
+    //---Direction Variables-------------------------
     //do something about all of these direction variables
     int dirState; // review this variable
     int attackDirection;
@@ -161,15 +158,16 @@ public class ControlT : MonoBehaviour
 
 
         //Debug.Log("dashed: " + dashed + ", attacked: " + attacked);
-        //Debug.Log(rb.velocity);
 
-        if (dashed)
+        if (dashed || stepped)
         {
             return;
         }
 
         if (!dashed && !attacked) rb.velocity = new Vector2(IP.movement.x, IP.movement.y) * moveSpeed;
-        if (!dashed && attacked) rb.velocity = new Vector2(IP.movement.x, IP.movement.y) * attackVector;
+        if (!dashed && attacked) rb.velocity = new Vector2(attackVector.x, attackVector.y) * attackScalar;
+
+        //Debug.Log(rb.velocity);
     }
 
     //everything else pertaining to controlling the character on screen will be handled in Update and LateUpdate
@@ -211,14 +209,11 @@ public class ControlT : MonoBehaviour
                 attackReady = false;
             }
 
-            // now in fixedupdate
-            // if we didn't dash, we were not hit, and we didn't attack somebody then we move normally
-            //if (!dashed && !hitbox.wasHit && !attacked) rb.velocity = new Vector2(IP.movement.x * IP.multiValH, 
-            //  IP.movement.y * IP.multiValV) * attackScalar * Time.timeScale;
-
-            //might delete
-            //if (!dashed && !hitbox.wasHit && attacked) rb.velocity = new Vector2(attackVector.x * IP.multiValH,
-            //  attackVector.y * IP.multiValV) * attackScalar * Time.timeScale;
+            // for testing
+            if (Input.GetKeyDown(KeyCode.F) && canStep)
+            {
+                StartCoroutine(Step());
+            }
 
             //Debug.Log(testingHurtbox);
 
@@ -333,30 +328,25 @@ public class ControlT : MonoBehaviour
     
     public void AnimateAttacks()
     {
-        // I want to put this into the InputProcessor.cs, but
-        //  I don't really need to have multiple references to
-        //  the animator. Also, setting up combos with the animator
-        //  is so much more convinient, and intuitive because you
-        //  can get a sense of exactly when and where the combo
-        //  will advance in a particular animation.
-
-        // Besides, combos in this game are not advanced. So there
-        //  is no need for a fancy combo system. AND, this method
-        //  overrides an abstract method from a class that
-        //  InputProcessor.cs doesn't inherit from.
-
+        //Debug.Log(attackReady);
+        
+        // The first attack will always execute and have attackScalar changed accordingly
         if (IP.abutton && attackReady && !testingHurtbox)
         {
             //dirState = attackDirection;
             attacked = true;
             attackReady = false;
-            //dodgeReady = false;
             animator.SetInteger("Direction", attackDirection);
             animator.SetTrigger("Attack A");
+            //Debug.Log(directionForAttack);
             if (directionForAttack == "look") attackVector = IP.lookV * attackScalar;
             if (directionForAttack == "move") attackVector = IP.movement * attackScalar;
-            //Debug.Log(attackScalar);
+            //Debug.Log(attackVector);
         }
+        // The second attack won't always execute and when the animation for the attack isn't played in time
+        //  this condition is still true and the regular value of 1 for the attackScalar gets used
+        // There must be a small window between the combo advance part of an animation and when the animation 
+        //  finally ends or ResetVars() is called, maybe.
         else if (IP.abutton && !attackReady && !testingHurtbox && openWindow)
         {
             //stats.SetAttackPotential(0);
@@ -365,13 +355,68 @@ public class ControlT : MonoBehaviour
             animator.SetBool("Fast Advance", useFastAdvance);
             animator.SetTrigger("Sub-Combo");
             animator.SetTrigger("Combo");
+            //Debug.Log(directionForAttack);
             if (directionForAttack == "look") attackVector = IP.lookV * attackScalar;
             if (directionForAttack == "move") attackVector = IP.movement * attackScalar;
-            //Debug.Log(attackScalar);
+            //Debug.Log(attackVector);
         }
         
     }
     
+    IEnumerator Step()
+    {
+        // test the step mechanic later, right now attacking is broken for some reason
+        #region Note
+        // When the player moves with the attack, i want it to feel as if they are 
+        //  taking a step instead of gliding across the floor. This can be controlled
+        //  in the animation, however:
+
+        // There are couple of problem areas to think about when using animations to
+        //  alter the magnitude of the movement vector.
+
+        // Problem Area 1: Holes, or gaps in the animator that will allow code to still
+        //  run without the animation altering key variables
+
+        // Problem Area 2: The animator does not run in a fixed time loop, and as such
+        //  the physics of movement in the animations will be off and not work properly
+        //  when the framerate dips.
+
+        // Problem Area 3: I have to go into each animation and manually change the
+        //  value of the scalar and if I need to change that value of that scalar
+        //  often, it soon becomes a huge pain.
+
+        // I could go on, but I think it's clear that I need to switch to a more
+        //  physics-based approach. So I guess I will be having a step mechanic.
+        #endregion
+        // Wait for FixedUpdate before updating values
+        yield return new WaitForFixedUpdate();
+
+        stepped = true;
+        canStep = false;
+        isStepping = true;
+
+        //Vector2 initialMovement = Vector2.zero;
+        
+        rb.velocity = new Vector2(IP.lookX, IP.lookY) * stepSpeed;
+
+        for (float duration = stepTime; duration > 0; duration -= Time.fixedDeltaTime)
+        {
+            yield return new WaitForFixedUpdate();
+        }
+
+        isStepping = false;
+        stepped = false;
+
+        for (float duration = stepCooldown; duration > 0; duration -= Time.fixedDeltaTime)
+        {
+            yield return new WaitForFixedUpdate();
+        }
+
+        rb.velocity = Vector2.zero;
+
+        canStep = true;
+    }
+
     IEnumerator Dash()
     {
         // test the mechanics first, then add the animations
@@ -457,6 +502,7 @@ public class ControlT : MonoBehaviour
 
         // The player can dash again
         canDash = true;
+        attackReady = true;
     }
     
     IEnumerator ShootProjectile()
@@ -651,13 +697,10 @@ public class ControlT : MonoBehaviour
     public void ResetVars()
     {
         //make sure that resetvars is only called at the end of animations or at the beginning
-        //dashAttackObject.transform.position = Vector2.zero;
-        if (attacked)// || dodgeReady == false)
+        if (attacked)
         {
             attacked = false;
             attackReady = true;
-            //dodgeReady = true;
-            //dashAttackConnected = false;
         }
     }
 

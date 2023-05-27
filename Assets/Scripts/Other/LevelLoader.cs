@@ -12,7 +12,7 @@ public class LevelLoader : MonoBehaviour
     {
         if (SceneData.playerEnteredFromDoor)
         {
-            ControlT player = FindObjectOfType<ControlT>();
+            PlayerController player = FindObjectOfType<PlayerController>();
             DoorScript[] doors = FindObjectsOfType<DoorScript>();
 
             for (int i = 0; i < doors.Length; i++)

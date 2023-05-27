@@ -63,7 +63,7 @@ public class PlayerHurtbox : MonoBehaviour
         //collider1.GetComponent<AttackCollider>();
 
         collider = Physics2D.OverlapBox(hitboxPoint, hitboxSize + hitboxSizeOffset, 0, mask);
-        Debug.Log(collider);
+        //Debug.Log(collider);
 
         if (wasHit == false && collider != null)
         {
