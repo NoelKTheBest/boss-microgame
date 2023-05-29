@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class InputProcessor : MonoBehaviour
 {
-    //PREPARE TO MAKE A REMAPPING FEATURE THAT CAN WORK FOR BOTH CURRENT PROJECTS
+    // PREPARE TO MAKE A REMAPPING FEATURE THAT CAN WORK FOR BOTH CURRENT PROJECTS
 
+    // Serialized Properties
+    public string directionForAttack, attackDirectionOverride = "none";
+    public string directionForDash, dashDirectionOverride = "none";
+    public string directionForStep, stepDirectionOverride = "none";
+
+    [HideInInspector] public int attackDirection, dashDirection, stepDirection, moveDirection;
     [HideInInspector] public float hDir, vDir, hDir2, vDir2;
     private float xPoint, yPoint, xPoint2, yPoint2;
     [HideInInspector] public float moveH, moveV, lookX, lookY;
@@ -17,19 +23,43 @@ public class InputProcessor : MonoBehaviour
     [HideInInspector] public Vector3 tempV;
     private Camera cam;
     [HideInInspector] public int controller;
-    private Hitbox hb;
     Vector2 JoyVector;
     
     void Awake()
     {
         cam = FindObjectOfType<Camera>().GetComponent<Camera>();
-        hb = GetComponent<Hitbox>();
     }
     
     void Update()
     {
         tempV = CalculatePlayerMouseVector();
         ProcessInputs();
+
+        if (controller == 0)
+        {
+            if (attackDirectionOverride == "none") directionForAttack = "look";
+            else if (attackDirectionOverride != "none") directionForAttack = attackDirectionOverride;
+
+            if (dashDirectionOverride == "none") directionForDash = "move";
+            else if (dashDirectionOverride != "none") directionForDash = dashDirectionOverride;
+
+            if (stepDirectionOverride == "none") directionForStep = "look";
+            else if (stepDirectionOverride != "none") directionForStep = stepDirectionOverride;
+        }
+        else if (controller == 1)
+        {
+            if (attackDirectionOverride == "none") directionForAttack = "move";
+            else if (attackDirectionOverride != "none") directionForAttack = attackDirectionOverride;
+
+            if (dashDirectionOverride == "none") directionForDash = "move";
+            else if (dashDirectionOverride != "none") directionForDash = dashDirectionOverride;
+
+            if (stepDirectionOverride == "none") directionForStep = "move";
+            else if (stepDirectionOverride != "none") directionForStep = stepDirectionOverride;
+        }
+
+        DetermineLookDirection();
+        if (controller == 1) DetermineMoveDirection();
     }
 
     // REVIEW THIS FUNCTION. It would be interesting to know how this funciton works.
@@ -70,7 +100,7 @@ public class InputProcessor : MonoBehaviour
         return new Vector3(x, y, 0);
     }
     
-    public void ProcessInputs()
+    void ProcessInputs()
     {
         // These if statements are for determining whether we are dealing with a 
         //  controller or keyboard in single player mode or online multiplayer
@@ -167,5 +197,224 @@ public class InputProcessor : MonoBehaviour
             // vector components already normalized
             lookV = new Vector2(lookX, lookY);
         }
+    }
+
+    void DetermineLookDirection()
+    {
+
+        //firepath.right = (IP.tempV - transform.position) + transform.position;
+
+        // The step mechanic will use the same direction as the attack direction. If attack direction is look, then
+        //  step direction will use look as well and vise versa.
+
+        // The dash mechanic could use either movement direction or look direction. By default it uses movement
+        //  direction.
+
+        // Determine direciton for attacking
+        {
+            bool rangeX = false;
+            bool rangeY = false;
+
+            if (directionForAttack == "look")
+            {
+                rangeX = (lookX > -0.7f) && (lookX < 0.7f); //can do 0.71 or 0.707 for more precision
+                rangeY = (lookY > -0.7f) && (lookY < 0.7f);
+
+                if (lookY > 0 && rangeX)
+                {
+                    attackDirection = 1;
+                }
+
+                if (lookY < 0 && rangeX)
+                {
+                    attackDirection = 2;
+                }
+
+                if (lookX > 0 && rangeY)
+                {
+                    attackDirection = 3;
+                }
+
+                if (lookX < 0 && rangeY)
+                {
+                    attackDirection = 4;
+                }
+            }
+            else if (directionForAttack == "move")
+            {
+                rangeX = (moveH > -0.7f) && (moveH < 0.7f);
+                rangeY = (moveV > -0.7f) && (moveV < 0.7f);
+
+                if (moveV > 0 && rangeX)
+                {
+                    attackDirection = 1;
+                }
+
+                if (moveV < 0 && rangeX)
+                {
+                    attackDirection = 2;
+                }
+
+                if (moveH > 0 && rangeY)
+                {
+                    attackDirection = 3;
+                }
+
+                if (moveH < 0 && rangeY)
+                {
+                    attackDirection = 4;
+                }
+            }
+        }
+
+        // Determine direction for dashing
+        {
+            bool rangeX = false;
+            bool rangeY = false;
+
+            if (directionForDash == "look")
+            {
+                rangeX = (lookX > -0.7f) && (lookX < 0.7f); //can do 0.71 or 0.707 for more precision
+                rangeY = (lookY > -0.7f) && (lookY < 0.7f);
+
+                if (lookY > 0 && rangeX)
+                {
+                    dashDirection = 1;
+                }
+
+                if (lookY < 0 && rangeX)
+                {
+                    dashDirection = 2;
+                }
+
+                if (lookX > 0 && rangeY)
+                {
+                    dashDirection = 3;
+                }
+
+                if (lookX < 0 && rangeY)
+                {
+                    dashDirection = 4;
+                }
+            }
+            else if (directionForDash == "move")
+            {
+                rangeX = (moveH > -0.7f) && (moveH < 0.7f);
+                rangeY = (moveV > -0.7f) && (moveV < 0.7f);
+
+                if (moveV > 0 && rangeX)
+                {
+                    dashDirection = 1;
+                }
+
+                if (moveV < 0 && rangeX)
+                {
+                    dashDirection = 2;
+                }
+
+                if (moveH > 0 && rangeY)
+                {
+                    dashDirection = 3;
+                }
+
+                if (moveH < 0 && rangeY)
+                {
+                    dashDirection = 4;
+                }
+            }
+
+            
+        }
+
+        // Determine direction for stepping
+        {
+            bool rangeX = false;
+            bool rangeY = false;
+
+            if (directionForStep == "look")
+            {
+                rangeX = (lookX > -0.7f) && (lookX < 0.7f); //can do 0.71 or 0.707 for more precision
+                rangeY = (lookY > -0.7f) && (lookY < 0.7f);
+
+                if (lookY > 0 && rangeX)
+                {
+                    stepDirection = 1;
+                }
+
+                if (lookY < 0 && rangeX)
+                {
+                    stepDirection = 2;
+                }
+
+                if (lookX > 0 && rangeY)
+                {
+                    stepDirection = 3;
+                }
+
+                if (lookX < 0 && rangeY)
+                {
+                    stepDirection = 4;
+                }
+            }
+            else if (directionForStep == "move")
+            {
+                rangeX = (moveH > -0.7f) && (moveH < 0.7f);
+                rangeY = (moveV > -0.7f) && (moveV < 0.7f);
+
+                if (moveV > 0 && rangeX)
+                {
+                    stepDirection = 1;
+                }
+
+                if (moveV < 0 && rangeX)
+                {
+                    stepDirection = 2;
+                }
+
+                if (moveH > 0 && rangeY)
+                {
+                    stepDirection = 3;
+                }
+
+                if (moveH < 0 && rangeY)
+                {
+                    stepDirection = 4;
+                }
+            }
+
+        }
+    }
+
+    void DetermineMoveDirection()
+    {
+        bool rangeX = false;
+        bool rangeY = false;
+
+        rangeX = (moveH > -0.7f) && (moveH < 0.7f);
+        rangeY = (moveV > -0.7f) && (moveV < 0.7f);
+
+        //Debug.Log("in range x: " + rangeX + " in range y: " + rangeY);
+
+        if (moveV > 0 && rangeX)
+        {
+            moveDirection = 1;
+        }
+
+        if (moveV < 0 && rangeX)
+        {
+            moveDirection = 2;
+        }
+
+        if (moveH > 0 && rangeY)
+        {
+            moveDirection = 3;
+        }
+
+        if (moveH < 0 && rangeY)
+        {
+            moveDirection = 4;
+        }
+
+        Debug.Log(moveDirection);
     }
 }

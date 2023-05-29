@@ -13,16 +13,16 @@ public class PlayerControllerEditor : Editor
     
     // Serialized Properties
     SerializedProperty _speed;
-    SerializedProperty _directionForAttack;
-    SerializedProperty _attackDirectionOverride;
-    SerializedProperty _directionForStep;
-    SerializedProperty _stepDirectionOverride;
+    //SerializedProperty _directionForAttack;
+    //SerializedProperty _attackDirectionOverride;
+    //SerializedProperty _directionForStep;
+    //SerializedProperty _stepDirectionOverride;
     SerializedProperty _isStepping;
     SerializedProperty _stepTime;
     SerializedProperty _stepCooldown;
     SerializedProperty _stepSpeed;
-    SerializedProperty _directionForDash;
-    SerializedProperty _dashDirectionOverride;
+    //SerializedProperty _directionForDash;
+    //SerializedProperty _dashDirectionOverride;
     SerializedProperty _isDashing;
     SerializedProperty _totalDashTime;
     SerializedProperty _dashTime;
@@ -36,16 +36,16 @@ public class PlayerControllerEditor : Editor
     void OnEnable()
     {
         _speed = serializedObject.FindProperty("speed");
-        _directionForAttack = serializedObject.FindProperty("directionForAttack");
-        _attackDirectionOverride = serializedObject.FindProperty("attackDirectionOverride");
-        _directionForStep = serializedObject.FindProperty("directionForStep");
-        _stepDirectionOverride = serializedObject.FindProperty("stepDirectionOverride");
+        //_directionForAttack = serializedObject.FindProperty("directionForAttack");
+        //_attackDirectionOverride = serializedObject.FindProperty("attackDirectionOverride");
+        //_directionForStep = serializedObject.FindProperty("directionForStep");
+        //_stepDirectionOverride = serializedObject.FindProperty("stepDirectionOverride");
         _isStepping = serializedObject.FindProperty("isStepping");
         _stepTime = serializedObject.FindProperty("stepTime");
         _stepCooldown = serializedObject.FindProperty("stepCooldown");
         _stepSpeed = serializedObject.FindProperty("stepSpeed");
-        _directionForDash = serializedObject.FindProperty("directionForDash");
-        _dashDirectionOverride = serializedObject.FindProperty("dashDirectionOverride");
+        //_directionForDash = serializedObject.FindProperty("directionForDash");
+        //_dashDirectionOverride = serializedObject.FindProperty("dashDirectionOverride");
         _isDashing = serializedObject.FindProperty("isDashing");
         _totalDashTime = serializedObject.FindProperty("totalDashTime");
         _dashTime = serializedObject.FindProperty("dashTime");
@@ -74,21 +74,21 @@ public class PlayerControllerEditor : Editor
         EditorGUILayout.EndHorizontal();
 
         // ----HEADER----
-        GUILayout.Label("Attack Variables", EditorStyles.boldLabel);
+        //GUILayout.Label("Attack Variables", EditorStyles.boldLabel);
 
         // GUI Control for PlayerController.directionForAttack
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Label("Direction For Attack");
-        _directionForAttack.stringValue = EditorGUILayout.TextField(_directionForAttack.stringValue);
-        EditorGUILayout.EndHorizontal();
+        //EditorGUILayout.BeginHorizontal();
+        //GUILayout.Label("Direction For Attack");
+        //_directionForAttack.stringValue = EditorGUILayout.TextField(_directionForAttack.stringValue);
+        //EditorGUILayout.EndHorizontal();
         
         // GUI Control for PlayerController.attackDirectionOverride
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Label(new GUIContent("Attack Direction Override",
-            "This value lets you override the input for the " +
-            "direction of the attack for testing purposes"));
-        _attackDirectionOverride.stringValue = EditorGUILayout.TextField(_attackDirectionOverride.stringValue);
-        EditorGUILayout.EndHorizontal();
+        //EditorGUILayout.BeginHorizontal();
+        //GUILayout.Label(new GUIContent("Attack Direction Override",
+        //    "This value lets you override the input for the " +
+        //    "direction of the attack for testing purposes"));
+        //_attackDirectionOverride.stringValue = EditorGUILayout.TextField(_attackDirectionOverride.stringValue);
+        //EditorGUILayout.EndHorizontal();
         #endregion
 
         #region Attack Movement And Step Controls
@@ -97,18 +97,18 @@ public class PlayerControllerEditor : Editor
         if (foldoutStep)
         {
             // GUI Control for PlayerController.directionForStep
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label("" + tab + "Direction For Step");
-            _directionForStep.stringValue = EditorGUILayout.TextField(_directionForStep.stringValue);
-            EditorGUILayout.EndHorizontal();
+            //EditorGUILayout.BeginHorizontal();
+            //GUILayout.Label("" + tab + "Direction For Step");
+            //_directionForStep.stringValue = EditorGUILayout.TextField(_directionForStep.stringValue);
+            //EditorGUILayout.EndHorizontal();
 
             // GUI Control for PlayerController.stepDirectionOverride
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label(new GUIContent("" + tab + "Step Direction Override",
-                "This value lets you override the input for the " +
-                "direction of the step for testing purposes"));
-            _stepDirectionOverride.stringValue = EditorGUILayout.TextField(_stepDirectionOverride.stringValue);
-            EditorGUILayout.EndHorizontal();
+            //EditorGUILayout.BeginHorizontal();
+            //GUILayout.Label(new GUIContent("" + tab + "Step Direction Override",
+            //    "This value lets you override the input for the " +
+            //    "direction of the step for testing purposes"));
+            //_stepDirectionOverride.stringValue = EditorGUILayout.TextField(_stepDirectionOverride.stringValue);
+            //EditorGUILayout.EndHorizontal();
 
             // GUI Control for PlayerController.isStepping
             EditorGUILayout.BeginHorizontal();
@@ -145,18 +145,18 @@ public class PlayerControllerEditor : Editor
             Rect tempForDecel;
 
             // GUI Control for PlayerController.directionForDash
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label("" + tab + "Direction For Dash");
-            _directionForDash.stringValue = EditorGUILayout.TextField(_directionForDash.stringValue);
-            EditorGUILayout.EndHorizontal();
+            //EditorGUILayout.BeginHorizontal();
+            //GUILayout.Label("" + tab + "Direction For Dash");
+            //_directionForDash.stringValue = EditorGUILayout.TextField(_directionForDash.stringValue);
+            //EditorGUILayout.EndHorizontal();
 
             // GUI Control for PlayerController.dashDirectionOverride
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label(new GUIContent("" + tab + "Dash Direction Override",
-                "This value lets you override the input for the direction" +
-                " of the dash for testing purposes"));
-            _dashDirectionOverride.stringValue = EditorGUILayout.TextField(_dashDirectionOverride.stringValue);
-            EditorGUILayout.EndHorizontal();
+            //EditorGUILayout.BeginHorizontal();
+            //GUILayout.Label(new GUIContent("" + tab + "Dash Direction Override",
+            //    "This value lets you override the input for the direction" +
+            //    " of the dash for testing purposes"));
+            //_dashDirectionOverride.stringValue = EditorGUILayout.TextField(_dashDirectionOverride.stringValue);
+            //EditorGUILayout.EndHorizontal();
 
             // GUI Control for PlayerController.isDashing
             EditorGUILayout.BeginHorizontal();

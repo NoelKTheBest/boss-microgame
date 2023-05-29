@@ -13,8 +13,8 @@ public class PlayerController : MonoBehaviour
     float moveSpeed;
 
     //---Fields for Attack---------------------------
-    public string attackDirectionOverride = "none";
-    public string directionForAttack;
+    //public string attackDirectionOverride = "none";
+    //public string directionForAttack;
     Vector2 orientationVector;
     Vector2 attackVector;
     public bool attackReady;
@@ -24,8 +24,8 @@ public class PlayerController : MonoBehaviour
     //public GameObject[] ammoCount;
 
     //---Fields for Attack Movement & Step-----------
-    public string stepDirectionOverride;
-    public string directionForStep;
+    //public string stepDirectionOverride;
+    //public string directionForStep;
     Vector2 stepVector;
     public float attackScalar;
     public bool isStepping;
@@ -36,8 +36,8 @@ public class PlayerController : MonoBehaviour
     public float stepSpeed;
 
     //---Fields for dashing--------------------------
-    public string dashDirectionOverride = "none";
-    public string directionForDash;
+    //public string dashDirectionOverride = "none";
+    //public string directionForDash;
     public bool isDashing;
     private bool canDash = true;
     bool dashed = false;
@@ -61,15 +61,6 @@ public class PlayerController : MonoBehaviour
     private float timeToCount;
     //[HideInInspector] public bool projectileReady;
 
-    //this could either be the time the game waits until it starts to take away more points
-    //or it could be the time that the game waits to take points away in the first place
-    //-----------------Coroutine Variables
-    //[SerializeField] private float timeTillUpdate;
-    //private float timeTillUpdateCopy;
-    //[SerializeField] private float frameTime;
-    //private float frameTimeCopy;
-    //bool coroutineFinished;
-
     //---Components----------------------------------
     public Transform firepath;
     private Rigidbody2D rb;
@@ -87,8 +78,6 @@ public class PlayerController : MonoBehaviour
     //---Direction Variables-------------------------
     //do something about all of these direction variables
     int dirState; // review this variable
-    int attackDirection;
-    int dashDirection;
     int moveDirection;
     string currentDirection;//-----------| All necessary
     string startDirection = "right";//---|
@@ -100,7 +89,6 @@ public class PlayerController : MonoBehaviour
     {
         //later on i will incorporate scriptable objects so data can persist between scenes
         //sound = GetComponentInChildren<AudioSource>();
-        //dashAttackScript = GetComponentInChildren<ForDashMechanic>();
         animator = GetComponent<Animator>();
         stats = GetComponent<PlayerStatistics>();
         rb = GetComponent<Rigidbody2D>();
@@ -112,53 +100,17 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         moveSpeed = speed;
-        //timeTillUpdateCopy = timeTillUpdate;
-        //frameTimeCopy = frameTime;
         currentDirection = startDirection;
         previousDirection = currentDirection;
         openWindow = false;
-        //dashAttackConnected = false;
-        //dashAttackPosition = Vector2.zero;
         objectPooler = ObjectPooler.Instance;
         attackReady = true;
-        //dodgeReady = true;
-        //abilityReady = true;
         idle = true;
-        //coroutineFinished = false;
-        //dashAttackObject.SetActive(false);
     }
 
     //edit rb.velocity in this function
     void FixedUpdate()
     {
-        // IP.movement and IP.lookV are two different kinds of direction
-        //  vectors. Meanwhile, attackVector is only used for giving the player some
-        //  movement when attacking so that they aren't just standing still.
-        //  It's especially helpful when there is knockback in the game and you
-        //  need to move with the enemy. However, normal movement stops when
-        //  you attack. Attacking is based on either IP.lookV when using mouse
-        //  and keyboard or it's based on IP.movement when using controller.
-        //  I will allow for the player to change these to their liking, but as
-        //  the default option, that will be how attacks work.
-        // The rest of the movement vector could be applied, but we really don't
-        //  need to do that. We can just use multiple if statements to determine
-        //  which vector rb.velocity should use. Like in the Update() function.
-        // Knockback vector will be similar the same as the attack vector or it
-        //  could be the cross product between the movement and attack vectors.
-        //  I'll have to do testing and think about how well cross product would
-        //  work for my game if I decide to use it.
-        // Now that I think about it, we really don't need to have a lot of knockback
-        //  at all. We could use light knockback on regular hits and heavy knockback
-        //  on combo finishers and heavy attacks.
-        // If I had no knockback, would we need to have a stepping mechanic?
-        //  I now want to have knockback in specific places, which should be easy enough
-        //  to plan for. So stepping would be for following up on an attack after
-        //  knockback has pushed them away, or for catching up to an enemy that
-        //  moved after an attack, or maybe even moving to another side of the boss.
-
-
-        //Debug.Log("dashed: " + dashed + ", attacked: " + attacked);
-
         if (dashed || stepped)
         {
             return;
@@ -170,7 +122,7 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(rb.velocity);
     }
 
-    //everything else pertaining to controlling the character on screen will be handled in Update and LateUpdate
+    // Everything else pertaining to controlling the character on screen will be handled in Update and LateUpdate
     void Update()
     {
         if (!stats.dead)
@@ -192,8 +144,6 @@ public class PlayerController : MonoBehaviour
             //  on the input device used
             // if (IP.controller == 0) directionForAttack = "look"
             // else if (IP.controller == 1) directionForAttack = "move"
-            
-            DetermineLookDirection();
             
             AnimateAttacks();
 
@@ -227,104 +177,6 @@ public class PlayerController : MonoBehaviour
             rb.velocity = Vector2.zero;
         }
     }
-
-    //might need to go into input manager
-    // DO NOT CHANGE THIS FUNCTION !!
-    public void DetermineLookDirection()
-    {
-        
-        //firepath.right = (IP.tempV - transform.position) + transform.position;
-        
-        ///Determine Attack Direction based on either the current look direction or movement direction
-        bool rangeX = false;
-        bool rangeY = false;
-
-        if (directionForAttack == "look")
-        {
-            rangeX = (IP.lookX > -0.7f) && (IP.lookX < 0.7f); //can do 0.71 or 0.707 for more precision
-            rangeY = (IP.lookY > -0.7f) && (IP.lookY < 0.7f);
-        }
-        else if (directionForAttack == "move")
-        {
-            rangeX = (IP.moveH > -0.7f) && (IP.moveH < 0.7f);
-            rangeY = (IP.moveV > -0.7f) && (IP.moveV < 0.7f);
-        }
-
-        if (IP.lookY > 0 && rangeX)
-        {
-            //direction = 1;
-            attackDirection = 1;
-        }
-
-        if (IP.lookY < 0 && rangeX)
-        {
-            //direction = 2;
-            attackDirection = 2;
-        }
-
-        if (IP.lookX > 0 && rangeY)
-        {
-            //direction = 3;
-            attackDirection = 3;
-        }
-
-        if (IP.lookX < 0 && rangeY)
-        {
-            //direction = 4;
-            attackDirection = 4;
-        }
-
-        //might have to put back in the dash function if the results of moving it here are proving to be harmful
-        ///Determine Dash Direction based on either the current look direction or movement direction
-        
-
-        /*Determine Dash Direction based on either the current look direction or movement direction
-        if (directionForAbility == "look")
-        {
-            if (IP.lookX > 0)
-            {
-                abilityDirection = 3;
-            }
-            else if (IP.lookX < 0)
-            {
-                abilityDirection = 4;
-            }
-            else if (IP.lookX == 0)
-            {
-                if (IP.lookY < 0)
-                {
-                    dashDirection = 4;
-                }
-                else if (IP.lookY > 0)
-                {
-                    dashDirection = 3;
-                }
-            }
-        }
-        else if (directionForAbility == "move")
-        {
-            if (IP.movement.x > 0)
-            {
-                abilityDirection = 3;
-            }
-            else if (IP.movement.x < 0)
-            {
-                abilityDirection = 4;
-            }
-            else if (IP.movement.x == 0)
-            {
-                if (IP.movement.y < 0)
-                {
-                    dashDirection = 4;
-                }
-                else if (IP.movement.y > 0)
-                {
-                    dashDirection = 3;
-                }
-            }
-        }
-        */
-    }
     
     public void AnimateAttacks()
     {
@@ -333,15 +185,12 @@ public class PlayerController : MonoBehaviour
         // The first attack will always execute and have attackScalar changed accordingly
         if (IP.abutton && attackReady && !testingHurtbox)
         {
-            //dirState = attackDirection;
+            Debug.Log(IP.attackDirection);
             attacked = true;
             attackReady = false;
-            animator.SetInteger("Direction", attackDirection);
+            animator.SetInteger("Direction", IP.attackDirection);
             animator.SetTrigger("Attack A");
-            //Debug.Log(directionForAttack);
-            if (directionForAttack == "look") attackVector = IP.lookV * attackScalar;
-            if (directionForAttack == "move") attackVector = IP.movement * attackScalar;
-            //Debug.Log(attackVector);
+            StartCoroutine(Step());
         }
         // The second attack won't always execute and when the animation for the attack isn't played in time
         //  this condition is still true and the regular value of 1 for the attackScalar gets used
@@ -349,23 +198,19 @@ public class PlayerController : MonoBehaviour
         //  finally ends or ResetVars() is called, maybe.
         else if (IP.abutton && !attackReady && !testingHurtbox && openWindow)
         {
-            //stats.SetAttackPotential(0);
+            Debug.Log(IP.attackDirection);
             attackScalar = 1;
-            animator.SetInteger("Direction", attackDirection);
+            animator.SetInteger("Direction", IP.attackDirection);
             animator.SetBool("Fast Advance", useFastAdvance);
             animator.SetTrigger("Sub-Combo");
             animator.SetTrigger("Combo");
-            //Debug.Log(directionForAttack);
-            if (directionForAttack == "look") attackVector = IP.lookV * attackScalar;
-            if (directionForAttack == "move") attackVector = IP.movement * attackScalar;
-            //Debug.Log(attackVector);
+            StartCoroutine(Step());
         }
         
     }
     
     IEnumerator Step()
     {
-        // test the step mechanic later, right now attacking is broken for some reason
         #region Note
         // When the player moves with the attack, i want it to feel as if they are 
         //  taking a step instead of gliding across the floor. This can be controlled
@@ -396,8 +241,15 @@ public class PlayerController : MonoBehaviour
         isStepping = true;
 
         //Vector2 initialMovement = Vector2.zero;
-        
-        rb.velocity = new Vector2(IP.lookX, IP.lookY) * stepSpeed;
+        if (IP.directionForAttack == "look")
+        {
+            rb.velocity = new Vector2(IP.lookX, IP.lookY) * stepSpeed;
+        }
+        else if (IP.directionForAttack == "move")
+        {
+            if (IP.movement != Vector2.zero) rb.velocity = IP.movement * stepSpeed;
+            if (IP.movement == Vector2.zero) rb.velocity = orientationVector * stepSpeed;
+        }
 
         for (float duration = stepTime; duration > 0; duration -= Time.fixedDeltaTime)
         {
@@ -434,8 +286,15 @@ public class PlayerController : MonoBehaviour
         dashDecel = dashSpeed;
 
         Vector2 initialMovement = Vector2.zero;
-        if (IP.movement != Vector2.zero) initialMovement = IP.movement;
-        if (IP.movement == Vector2.zero) initialMovement = orientationVector;
+        if (IP.directionForDash == "move")
+        {
+            if (IP.movement != Vector2.zero) initialMovement = IP.movement;
+            if (IP.movement == Vector2.zero) initialMovement = orientationVector;
+        }
+        else if (IP.directionForDash == "look")
+        {
+            initialMovement = IP.lookV;
+        }
 
         //-------------------------------------------------------------------------------//
 
@@ -546,7 +405,7 @@ public class PlayerController : MonoBehaviour
     
     public void AnimateMovement()
     {
-        // review this script
+        // review this method
 
         /*
          * one bug I've found is that when moving in two directions and you swtich one of the directions 
@@ -554,135 +413,172 @@ public class PlayerController : MonoBehaviour
          *  there isn't enough logic to help the cpu decide how to animate the character in those situations
          */
         
-        int direction = 0;
-        
-        // The first 4 if statements determine the current direction
-
-        // both of these if statements determine the current horizontal direction
-        if (IP.moveH < 0)
+        if (IP.controller == 0)
         {
-            // set previous direction is player was idle
-            if (currentDirection == "none")
+            int direction = 0;
+
+            // The first 4 if statements determine the current direction
+
+            // both of these if statements determine the current horizontal direction
+            if (IP.moveH < 0)
             {
-                previousDirection = "left";
+                // set previous direction is player was idle
+                if (currentDirection == "none")
+                {
+                    previousDirection = "left";
+                }
+
+                currentDirection = "left";
+                direction = 4;
+                moving = true;
+                idle = false;
+            }
+            else if (IP.moveH > 0)
+            {
+                // set previous direction is player was idle
+                if (currentDirection == "none")
+                {
+                    previousDirection = "right";
+                }
+
+                currentDirection = "right";
+                direction = 3;
+                moving = true;
+                idle = false;
             }
 
-            currentDirection = "left";
-            direction = 4;
-            moving = true;
-            idle = false;
-        }
-        else if (IP.moveH > 0)
-        {
-            // set previous direction is player was idle
-            if (currentDirection == "none")
+            // both of these if statements determine the current vertical direction
+            if (IP.moveV < 0)
             {
-                previousDirection = "right";
+                // set previous direction is player was idle
+                if (currentDirection == "none")
+                {
+                    previousDirection = "down";
+                }
+
+                currentDirection = "down";
+                direction = 2;
+                moving = true;
+                idle = false;
+            }
+            else if (IP.moveV > 0)
+            {
+                // set previous direction is player was idle
+                if (currentDirection == "none")
+                {
+                    previousDirection = "up";
+                }
+
+                currentDirection = "up";
+                direction = 1;
+                moving = true;
+                idle = false;
             }
 
-            currentDirection = "right";
-            direction = 3;
-            moving = true;
-            idle = false;
-        }
+            // These next 4 if statements determine the previous direction
 
-        // both of these if statements determine the current vertical direction
-        if (IP.moveV < 0)
-        {
-            // set previous direction is player was idle
-            if (currentDirection == "none")
-            {
-                previousDirection = "down";
-            }
-
-            currentDirection = "down";
-            direction = 2;
-            moving = true;
-            idle = false;
-        }
-        else if (IP.moveV > 0)
-        {
-            // set previous direction is player was idle
-            if (currentDirection == "none")
+            // Based on the logic, nothing changes when the player isn't moving
+            //  in a direction that can change their orientation.
+            // These statements allow for the previous direction to change when
+            //  the player is no longer moving in a direction congruent with or
+            //  opposite to the direction they started in.
+            if (currentDirection == "up" && IP.moveH == 0)
             {
                 previousDirection = "up";
+                direction = 1;
+                moveDirection = direction;
+                moving = true;
+                idle = false;
             }
 
-            currentDirection = "up";
-            direction = 1;
-            moving = true;
-            idle = false;
-        }
+            if (currentDirection == "down" && IP.moveH == 0)
+            {
+                previousDirection = "down";
+                direction = 2;
+                moveDirection = direction;
+                moving = true;
+                idle = false;
+            }
 
-        // These next 4 if statements determine the previous direction
-        
-        // Based on the logic, nothing changes when the player isn't moving
-        //  in a direction that can change their orientation.
-        // These statements allow for the previous direction to change when
-        //  the player is no longer moving in a direction congruent with or
-        //  opposite to the direction they started in.
-        if (currentDirection == "up" && IP.moveH == 0)
-        {
-            previousDirection = "up";
-            direction = 1;
-            moveDirection = direction;
-            moving = true;
-            idle = false;
-        }
+            if (currentDirection == "right" && IP.moveV == 0)
+            {
+                previousDirection = "right";
+                direction = 3;
+                moveDirection = direction;
+                moving = true;
+                idle = false;
+            }
 
-        if (currentDirection == "down" && IP.moveH == 0)
-        {
-            previousDirection = "down";
-            direction = 2;
-            moveDirection = direction;
-            moving = true;
-            idle = false;
-        }
+            if (currentDirection == "left" && IP.moveV == 0)
+            {
+                previousDirection = "left";
+                direction = 4;
+                moveDirection = direction;
+                moving = true;
+                idle = false;
+            }
 
-        if (currentDirection == "right" && IP.moveV == 0)
-        {
-            previousDirection = "right";
-            direction = 3;
-            moveDirection = direction;
-            moving = true;
-            idle = false;
-        }
+            // Reset variables when player stops moving
+            if (IP.moveH == 0 && IP.moveV == 0)
+            {
+                currentDirection = "none";
+                idle = true;
+                moving = false;
+            }
 
-        if (currentDirection == "left" && IP.moveV == 0)
-        {
-            previousDirection = "left";
-            direction = 4;
-            moveDirection = direction;
-            moving = true;
-            idle = false;
+            switch (direction)
+            {
+                // up
+                case 1:
+                    orientationVector = Vector2.up;
+                    break;
+                // down
+                case 2:
+                    orientationVector = Vector2.down;
+                    break;
+                // right
+                case 3:
+                    orientationVector = Vector2.right;
+                    break;
+                // left
+                case 4:
+                    orientationVector = Vector2.left;
+                    break;
+            }
         }
-
-        // Reset variables when player stops moving
-        if (IP.moveH == 0 && IP.moveV == 0)
+        else if (IP.controller == 1)
         {
-            currentDirection = "none";
-            idle = true;
-            moving = false;
-        }
+            if (IP.movement != Vector2.zero)
+            {
+                moveDirection = IP.moveDirection;
+                moving = true;
+                idle = false;
+            }
+            else if (IP.movement == Vector2.zero)
+            {
+                idle = true;
+                moving = false;
+            }
 
-        switch (direction)
-        {
-            // up
-            case 1:
-                orientationVector = Vector2.up;
-                break;
-            // down
-            case 2:
-                orientationVector = Vector2.down;
-                break;
-            // right
-            case 3:
-                orientationVector = Vector2.right;
-                break;
-            // left
-            case 4:
-                orientationVector = Vector2.left;
-                break;
+            switch (moveDirection)
+            {
+                // up
+                case 1:
+                    orientationVector = Vector2.up;
+                    break;
+                // down
+                case 2:
+                    orientationVector = Vector2.down;
+                    break;
+                // right
+                case 3:
+                    orientationVector = Vector2.right;
+                    break;
+                // left
+                case 4:
+                    orientationVector = Vector2.left;
+                    break;
+            }
         }
 
         //Debug.Log("facing direction: " + orientationVector);
