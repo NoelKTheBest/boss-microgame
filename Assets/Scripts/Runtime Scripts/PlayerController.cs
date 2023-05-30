@@ -292,7 +292,6 @@ public class PlayerController : MonoBehaviour
 
         // Saving this note for later, just in case I forget why I'm doing this.
         #endregion
-        //yield return new WaitForSeconds(accelTime);
         for (float duration = accelTime; duration > 0; duration -= Time.fixedDeltaTime)
         {
             dashAccel += accelAmount;
@@ -306,11 +305,9 @@ public class PlayerController : MonoBehaviour
         //-------------------------------------------------------------------------------//
 
         // Main dash starts
-        //yield return new WaitForFixedUpdate();
         rb.velocity = new Vector2(initialMovement.x, initialMovement.y) * dashSpeed;
 
         // Main dash stops
-        //yield return new WaitForSeconds(dashTime);
         for (float duration = dashTime; duration > 0; duration -= Time.fixedDeltaTime)
         {
             yield return new WaitForFixedUpdate();
