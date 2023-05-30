@@ -17,6 +17,7 @@ public class PlayerHurtbox : MonoBehaviour
     public bool hitByProjectile;
 
     private PlayerStatistics myStats;
+    private PlayerController myController;
     private Rigidbody2D rb;
 
     private Vector2 hitDirection;
@@ -36,6 +37,7 @@ public class PlayerHurtbox : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         myStats = GetComponent<PlayerStatistics>();
+        myController = GetComponent<PlayerController>();
         //anim = GetComponent<Animator>();
     }
 
@@ -68,16 +70,17 @@ public class PlayerHurtbox : MonoBehaviour
         if (wasHit == false && collider != null)
         {
             wasHit = true;
-            float b = 0;
-            float hbMultiplier = 0;
+            //float b = 0;
+            //float hbMultiplier = 0;
 
             //finding the hitbox component of the boss might be fine, but i need to ditch the stats class
-            Hitbox hb = collider.GetComponentInParent<Hitbox>();
+            //Hitbox hb = collider.GetComponentInParent<Hitbox>();
+            BossStatistics boss = collider.GetComponentInParent<BossStatistics>();
             Vector2 attackVector = transform.position - collider.transform.position;
+            myController.ReceiveKnockback(attackVector, boss.force);
 
-            if (hb.gameObject.tag == "Projectile") hitByProjectile = true;
+            //if (hb.gameObject.tag == "Projectile") hitByProjectile = true;
             
-            rb.velocity = attackVector;
             //Debug.Log(((stats.currentAtk * stats.attackPotential) + b) * hbMultiplier);
             //myStats.TakeDamage(((stats.currentAtk * stats.attackPotential) + b) * hbMultiplier);
             //if (OnHitDetected != null) OnHitDetected.Invoke(attackVector);

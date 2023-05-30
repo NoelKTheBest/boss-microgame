@@ -19,7 +19,7 @@ public class BossStatistics : MonoBehaviour
     private float def;//30
     public bool dead;
     [HideInInspector] public float attackPotential;
-    [HideInInspector] public float force;
+    public float force;
     [HideInInspector] public HealthBar hb;
     private BossHurtbox myHurtbox;
     public DamageTaken OnDamageTaken;

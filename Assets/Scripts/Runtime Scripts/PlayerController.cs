@@ -9,60 +9,57 @@ public class PlayerController : MonoBehaviour
     // Considering that the class is somewhat generic, I will leave it alone
 
     //---Fields for movement
-    public float speed;
+    [HideInInspector] public float speed;
     float moveSpeed;
 
     //---Fields for Attack---------------------------
-    //public string attackDirectionOverride = "none";
-    //public string directionForAttack;
     Vector2 orientationVector;
     Vector2 attackVector;
-    public bool attackReady;
+    [HideInInspector] public bool attackReady;
     bool attacked;
-    public bool openWindow;
-    public bool useFastAdvance;
+    [HideInInspector] public bool openWindow;
+    [HideInInspector] public bool useFastAdvance;
     //public GameObject[] ammoCount;
 
     //---Fields for Attack Movement & Step-----------
-    //public string stepDirectionOverride;
-    //public string directionForStep;
     Vector2 stepVector;
-    public float attackScalar;
-    public bool isStepping;
+    [HideInInspector] public float attackScalar;
+    [HideInInspector] public bool isStepping;
     private bool canStep = true;
     bool stepped = false;
-    public float stepTime;
-    public float stepCooldown;
-    public float stepSpeed;
+    [HideInInspector] public float stepTime;
+    [HideInInspector] public float stepCooldown;
+    [HideInInspector] public float stepSpeed;
+    [HideInInspector] public float recoveryAmount;
+    float recovery;
+    private bool isfallingBack;
 
     //---Fields for dashing--------------------------
-    //public string dashDirectionOverride = "none";
-    //public string directionForDash;
-    public bool isDashing;
+    [HideInInspector] public bool isDashing;
     private bool canDash = true;
     bool dashed = false;
-    
-    public float accelTime;
-    public float accelAmount;
+
+    [HideInInspector] public float accelTime;
+    [HideInInspector] public float accelAmount;
     private float dashAccel;
 
-    public float totalDashTime;
-    public float dashTime;
-    public float dashCooldown;
-    public float dashSpeed;
-    
-    public float decelTime;
-    public float decelAmount;
+    [HideInInspector] public float totalDashTime;
+    [HideInInspector] public float dashTime;
+    [HideInInspector] public float dashCooldown;
+    [HideInInspector] public float dashSpeed;
+
+    [HideInInspector] public float decelTime;
+    [HideInInspector] public float decelAmount;
     private float dashDecel;
 
     //---Fields for projectiles----------------------
-    public float shootingWait;
+    [HideInInspector] public float shootingWait;
     ObjectPooler objectPooler;
     private float timeToCount;
     //[HideInInspector] public bool projectileReady;
 
     //---Components----------------------------------
-    public Transform firepath;
+    [HideInInspector] public Transform firepath;
     private Rigidbody2D rb;
     private InputProcessor IP;
     private PlayerStatistics stats;
@@ -73,7 +70,7 @@ public class PlayerController : MonoBehaviour
 
 
     //---Other---------------------------------------
-    public bool testingHurtbox;
+    [HideInInspector] public bool testingHurtbox;
 
     //---Direction Variables-------------------------
     //do something about all of these direction variables
@@ -99,6 +96,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        recovery = recoveryAmount;
         moveSpeed = speed;
         currentDirection = startDirection;
         previousDirection = currentDirection;
@@ -111,7 +109,7 @@ public class PlayerController : MonoBehaviour
     //edit rb.velocity in this function
     void FixedUpdate()
     {
-        if (dashed || stepped)
+        if (dashed || stepped || isfallingBack)
         {
             return;
         }
@@ -139,14 +137,7 @@ public class PlayerController : MonoBehaviour
                 stats.dead = true;
             }
             */
-
-            // include if statement here that changes direction for attacking based
-            //  on the input device used
-            // if (IP.controller == 0) directionForAttack = "look"
-            // else if (IP.controller == 1) directionForAttack = "move"
             
-            AnimateAttacks();
-
             if (IP.pbutton && timeToCount == shootingWait)
             {
                 StartCoroutine(ShootProjectile());
@@ -159,14 +150,17 @@ public class PlayerController : MonoBehaviour
                 attackReady = false;
             }
 
+            if (IP.abutton)
+            {
+                AnimateAttacks();
+            }
+
             // for testing
             if (Input.GetKeyDown(KeyCode.F) && canStep)
             {
                 StartCoroutine(Step());
             }
-
-            //Debug.Log(testingHurtbox);
-
+            
             if (!dashed && !attacked && !hitbox.wasHit)
             {
                 AnimateMovement();
@@ -178,30 +172,21 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-    public void AnimateAttacks()
+    void AnimateAttacks()
     {
-        //Debug.Log(attackReady);
-        
         // The first attack will always execute and have attackScalar changed accordingly
-        if (IP.abutton && attackReady && !testingHurtbox)
+        if (/*IP.abutton && */attackReady && !testingHurtbox && !openWindow)
         {
-            Debug.Log(IP.attackDirection);
             attacked = true;
             attackReady = false;
             animator.SetInteger("Direction", IP.attackDirection);
             animator.SetTrigger("Attack A");
             StartCoroutine(Step());
         }
-        // The second attack won't always execute and when the animation for the attack isn't played in time
-        //  this condition is still true and the regular value of 1 for the attackScalar gets used
-        // There must be a small window between the combo advance part of an animation and when the animation 
-        //  finally ends or ResetVars() is called, maybe.
-        else if (IP.abutton && !attackReady && !testingHurtbox && openWindow)
+        else if (/*IP.abutton && */!attackReady && !testingHurtbox && openWindow)
         {
-            Debug.Log(IP.attackDirection);
-            attackScalar = 1;
             animator.SetInteger("Direction", IP.attackDirection);
-            animator.SetBool("Fast Advance", useFastAdvance);
+            //animator.SetBool("Fast Advance", useFastAdvance);
             animator.SetTrigger("Sub-Combo");
             animator.SetTrigger("Combo");
             StartCoroutine(Step());
@@ -334,7 +319,6 @@ public class PlayerController : MonoBehaviour
         //-------------------------------------------------------------------------------//
 
         // Dash starts decelerating
-        //yield return new WaitForSeconds(decelTime);
         for (float duration = decelTime; duration > 0; duration -= Time.fixedDeltaTime)
         {
             dashDecel -= decelAmount;
@@ -353,7 +337,6 @@ public class PlayerController : MonoBehaviour
 
         // I force the player to wait for a cooldown period before they can dash again
         //  It won't be really long
-        //yield return new WaitForSeconds(dashCooldown);
         for (float duration = dashCooldown; duration > 0; duration -= Time.fixedDeltaTime)
         {
             yield return new WaitForFixedUpdate();
@@ -364,20 +347,28 @@ public class PlayerController : MonoBehaviour
         attackReady = true;
     }
     
+    IEnumerator Knockback(Vector2 knockbackDirection, float knockbackSpeed)
+    {
+        // Wait for FixedUpdate before updating values
+        yield return new WaitForFixedUpdate();
+
+        isfallingBack = true;
+        float initialSpeed = knockbackSpeed;
+        
+        while (knockbackSpeed > 0)
+        {
+            //Debug.Log(knockbackDirection.normalized);
+            rb.velocity = knockbackDirection.normalized * knockbackSpeed;
+            knockbackSpeed -= recovery;
+            //knockbackSpeed = Mathf.Clamp(knockbackSpeed, 0f, initialSpeed);
+            yield return new WaitForFixedUpdate();
+        }
+
+        isfallingBack = false;
+    }
+
     IEnumerator ShootProjectile()
     {
-
-        /*
-        if (IP.abuttonC && attackReady)
-        {
-            attackReady = false;
-            dashReady = false;
-            dodgeReady = false;
-            animator.SetTrigger("Attack C");
-            //animator.SetInteger("Direction", dirState); //use this when you have attack c animation ready
-        }
-        */
-
         animator.SetTrigger("Shoot");
 
         //firepath.right = (((Vector3)lookVector + firepath.position) - transform.position) + transform.position;
@@ -403,7 +394,7 @@ public class PlayerController : MonoBehaviour
         //projectileReady = true;
     }
     
-    public void AnimateMovement()
+    void AnimateMovement()
     {
         // review this method
 
@@ -518,6 +509,7 @@ public class PlayerController : MonoBehaviour
                 idle = false;
             }
 
+            //if (currentDirection == "up" && previousDirection == "left")
             // Reset variables when player stops moving
             if (IP.moveH == 0 && IP.moveV == 0)
             {
@@ -583,6 +575,7 @@ public class PlayerController : MonoBehaviour
 
         //Debug.Log("facing direction: " + orientationVector);
         //Debug.Log(moveDirection + " : " + previousDirection);
+        //Debug.Log(currentDirection + " : " + previousDirection);
 
         animator.SetInteger("Direction", moveDirection);
         animator.SetBool("Idle", idle);
@@ -600,31 +593,41 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void AnimateDamage(Vector2 a)
+    public void ReceiveKnockback(Vector2 knockbackVector, float velocity)
+    {
+        AnimateDamage(knockbackVector);
+        if (!isfallingBack) StartCoroutine(Knockback(knockbackVector, velocity));
+        if (isfallingBack)
+        {
+            StopCoroutine(Knockback(knockbackVector, velocity));
+            StartCoroutine(Knockback(knockbackVector, velocity));
+        }
+    }
+
+    void AnimateDamage(Vector2 animationDirection)
     {
         if (!stats.dead)
         {
             //for later:
             //setup dash to not be available when getting hit
             int direction = 0;
-            if (a.x < 0)
+            if (animationDirection.x < 0)
             {
                 direction = 3;
             }
-            else if (a.x > 0)
+            else if (animationDirection.x > 0)
             {
                 direction = 4;
             }
             moveDirection = direction;
             animator.SetInteger("Direction", direction);
             animator.SetTrigger("Hit");
-            rb.velocity = a * stats.force;
             //sound.clip = clips[2];
             //sound.Play();
         }
     }
 
-    public void Die()
+    void Die()
     {
         animator.SetInteger("Direction", dirState);//might change dirState
         animator.SetTrigger("Dead");
@@ -632,32 +635,4 @@ public class PlayerController : MonoBehaviour
         //sound.clip = clips[3];
         //sound.Play();
     }
-
-    #region Example Code
-    // Example FixedTimeCoroutineThing
-    /*
-    IEnumerator FixedTimeCoroutineThing()
-    {
-        YieldInstruction waitForFixedUpdate = new WaitForFixedUpdate();
-        // This while loop is not needed in this script
-        while (true)
-        {
-
-            // Your per-update logic goes here
-
-            // This for loop is equivalent to WaitForSeconds
-            // but uses fixed/physics timestep instead of
-            // the variable one used for non-essential/loose
-            // game elements and graphics.
-            for (float duration = 1f; duration > 0; duration -= Time.fixedDeltaTime)
-            {
-                // this yield statement can be swapped out for
-                //  yield return new WaitForFixedUpdate();
-                // this statement 
-                yield return waitForFixedUpdate;
-            }
-        }
-    }
-    */
-    #endregion
 }

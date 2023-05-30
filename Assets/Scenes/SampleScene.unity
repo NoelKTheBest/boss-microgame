@@ -1967,7 +1967,7 @@ Tilemap:
       - {fileID: -2147816707028960771, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 4618957681245923913, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 6513522493206877968, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
-      m_AnimationSpeed: 13.310186
+      m_AnimationSpeed: 10.095819
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -30, y: 14, z: 0}
@@ -1986,7 +1986,7 @@ Tilemap:
       - {fileID: -2147816707028960771, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 4618957681245923913, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 6513522493206877968, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
-      m_AnimationSpeed: 11.671961
+      m_AnimationSpeed: 10.849575
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -27, y: 14, z: 0}
@@ -2005,7 +2005,7 @@ Tilemap:
       - {fileID: -2147816707028960771, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 4618957681245923913, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 6513522493206877968, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
-      m_AnimationSpeed: 8.5500965
+      m_AnimationSpeed: 8.724552
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -24, y: 14, z: 0}
@@ -2024,7 +2024,7 @@ Tilemap:
       - {fileID: -2147816707028960771, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 4618957681245923913, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 6513522493206877968, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
-      m_AnimationSpeed: 13.385963
+      m_AnimationSpeed: 12.54498
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -21, y: 14, z: 0}
@@ -2043,7 +2043,7 @@ Tilemap:
       - {fileID: -2147816707028960771, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 4618957681245923913, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 6513522493206877968, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
-      m_AnimationSpeed: 12.771473
+      m_AnimationSpeed: 13.513459
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   m_TileAssetArray:
@@ -11757,7 +11757,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -0.53, y: 0}
+  m_AnchoredPosition: {x: -0.5299988, y: 0}
   m_SizeDelta: {x: 101.06, y: 146.8}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1374346458
@@ -13235,6 +13235,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2141641655}
   - component: {fileID: 2141641654}
+  - component: {fileID: 2141641656}
   m_Layer: 0
   m_Name: MouseHitbox
   m_TagString: Untagged
@@ -13273,6 +13274,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2141641656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141641653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cdefd27fe6ed4346b09fed37778ba53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHP: 0
+  currentAtk: 0
+  currentDef: 0
+  currentSpd: 0
+  dead: 0
+  attackPotential: 0
+  force: 2.5
+  hb: {fileID: 0}
+  OnDamageTaken:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: DamageTaken, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!1001 &1986299686256775474
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13709,6 +13734,11 @@ PrefabInstance:
         type: 3}
       propertyPath: attackScalar
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3823064454455954668, guid: f1fc044a99ec3f1419cd6f87dd4a761c,
+        type: 3}
+      propertyPath: recoveryAmount
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 3823064454455954671, guid: f1fc044a99ec3f1419cd6f87dd4a761c,
         type: 3}
