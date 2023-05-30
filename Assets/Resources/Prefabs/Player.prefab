@@ -142,9 +142,9 @@ GameObject:
   - component: {fileID: 3823064454455954674}
   - component: {fileID: 3823064454455954668}
   - component: {fileID: 3823064454455954677}
-  - component: {fileID: 3823064454455954670}
+  - component: {fileID: -7298817717784745623}
   - component: {fileID: 3823064454455954669}
-  - component: {fileID: 3823064454455954671}
+  - component: {fileID: -9201330649193148696}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -285,48 +285,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 3823064454455954676}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7588b84d307736040b8d3170f42a45fb, type: 3}
+  m_Script: {fileID: 11500000, guid: a2d6e9bb49c245f45acd909d750d46d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dashScalars:
-  - 3
-  - 3
-  - 4
-  - 5
-  - 8
-  - 8
-  - 8
-  - 8
-  - 5
-  - 4
-  - 3
-  - 3
-  dashWaitScalars: []
-  directionForDash: move
+  speed: 7
+  attackDirectionOverride: none
   directionForAttack: look
-  directionForAbility: move
-  attackScalar: 1
   attackReady: 0
-  dashReady: 0
-  dodgeReady: 0
-  abilityReady: 0
   openWindow: 0
   useFastAdvance: 0
+  stepDirectionOverride: 
+  directionForStep: 
+  attackScalar: 0
+  isStepping: 0
+  stepTime: 0
+  stepCooldown: 0
+  stepSpeed: 0
+  dashDirectionOverride: none
+  directionForDash: 
+  isDashing: 0
+  accelTime: 0
+  accelAmount: 0
+  dashTime: 0
+  dashCooldown: 0
+  dashSpeed: 0
+  decelTime: 0
+  decelAmount: 0
   shootingWait: 0
-  timeTillUpdate: 5
-  frameTime: 0.5
-  currentPointCost: 10
-  pointCostInc: 5
   firepath: {fileID: 3823064455395500757}
-  upgradeSymbol: {fileID: 0}
-  clips:
-  - {fileID: 8300000, guid: 43d8013fbd3d06844bc52f60f0e71353, type: 3}
-  - {fileID: 8300000, guid: ec57fa43f5e7fe644998baabfcc13e0a, type: 3}
-  - {fileID: 8300000, guid: 6a728a47a5803f942b4c48c9965e77a5, type: 3}
-  - {fileID: 8300000, guid: 6a728a47a5803f942b4c48c9965e77a5, type: 3}
-  animA: {fileID: 0}
-  animD: {fileID: 0}
-  animS: {fileID: 0}
+  testingHurtbox: 0
 --- !u!114 &3823064454455954677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,23 +334,14 @@ MonoBehaviour:
   moveV: 0
   lookX: 0
   lookY: 0
-  dbutton: 0
-  abuttonA: 0
-  abuttonB: 0
+  abutton: 0
   pbutton: 0
-  ubutton: 0
-  ebutton: 0
-  aAbutton: 0
-  dAbutton: 0
-  sAbutton: 0
+  dbutton: 0
   movement: {x: 0, y: 0}
   lookV: {x: 0, y: 0}
   tempV: {x: 0, y: 0, z: 0}
   controller: 0
-  m: 4
-  multiValH: 0
-  multiValV: 0
---- !u!114 &3823064454455954670
+--- !u!114 &-7298817717784745623
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -372,24 +350,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 3823064454455954676}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8f05ad8692e1444ca5356eaae9fda2e, type: 3}
+  m_Script: {fileID: 11500000, guid: 8efe172281c29f34cb4d07c4d3514522, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHP: 0
-  currentAtk: 0
-  currentDef: 0
-  currentSpd: 0
-  baseMoveSpd: 4
-  dead: 0
-  attackPotential: 0
-  force: 0
-  hb: {fileID: 0}
-  p: {fileID: 0}
-  OnDamageTaken:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: DamageTaken, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  bulletPower: 0
+  wasHit: 0
+  hitByProjectile: 0
+  hitboxPoint: {x: 0, y: 0}
+  hitboxOffset: {x: 0, y: 0}
+  hitboxSize: {x: 0, y: 0}
+  animHitboxOffset: {x: 0, y: 0}
+  hitboxSizeOffset: {x: 0, y: 0}
 --- !u!114 &3823064454455954669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -403,15 +373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wasHit: 0
-  blockHealth: 0
-  blockDefense: 0
   hitboxHealth: 0
-  hitboxDefense: 0
-  hbStrongMultiplier: 0
-  hbWeakMultiplier: 0
-  forceOfAttack: 0
-  isPlayerUpgraded: 0
-  hasPlayerDashed: 0
   hitByProjectile: 0
   myStats: {fileID: 0}
   OnHitDetected:
@@ -429,62 +391,13 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: HitDetected, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnBlockHitDetected:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3823064454455954668}
-        m_MethodName: Block
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: BlockHitDetected, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnDodgeHitDetected:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3823064454455954668}
-        m_MethodName: Evade
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: DodgeDetected, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
-  OnDashAttackConnected:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3823064454455954668}
-        m_MethodName: DashAttackSetup
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   hitboxPoint: {x: -61.809998, y: 22.34}
   hitboxOffset: {x: -0.14, y: 0.25}
   hitboxSize: {x: 0.84, y: 1.73}
   animHitboxOffset: {x: 0, y: 0}
   hitboxSizeOffset: {x: 0, y: 0}
-  hitboxType: 0
   hitboxStrength: 0
---- !u!114 &3823064454455954671
+--- !u!114 &-9201330649193148696
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -493,22 +406,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 3823064454455954676}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 170316a46b8d01a47a9cf1f477a9c044, type: 3}
+  m_Script: {fileID: 11500000, guid: e1f36725a321cf84eb657b5b29eee601, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointBar: {fileID: 0}
-  currentPoints: 0
-  pointGainFromDmgPercent: 0.25
-  atkACost: 0
-  atkBCost: 0
-  abilityCost: 250
-  uAbilityCost: 0
-  atkAUpgrade: 0
-  atkBUpgrade: 0
-  abilityUse: 0
-  uAbilityUse: 0
-  wasAbilityUsed: 0
-  isPlayerUpgraded: 0
+  currentHP: 0
+  currentAtk: 0
+  currentDef: 0
+  currentSpd: 0
+  dead: 0
+  attackPotential: 0
+  force: 0
+  hb: {fileID: 0}
+  OnDamageTaken:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: DamageTaken, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!1 &3823064455395500756
 GameObject:
   m_ObjectHideFlags: 0

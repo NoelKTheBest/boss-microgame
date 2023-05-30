@@ -9,12 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Main Menu.unity
     guid: 23454b3befb7bdb4ebe82aa7f6494556
   - enabled: 1
-    path: Assets/Scenes/Laboratory Scenes/Laboratory Start.unity
-    guid: 84558cdc08968f640b124ebb98ec742c
-  - enabled: 1
-    path: Assets/Scenes/Laboratory Scenes/Hallway_1.unity
-    guid: 9630e306882429e44ab237bb81c6c089
-  - enabled: 1
-    path: Assets/Scenes/Laboratory Scenes/Laboratory Specimen Area_3.unity
-    guid: 86d208a03c57101449f79577cdebdef5
+    path: Assets/Scenes/SampleScene.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects: {}

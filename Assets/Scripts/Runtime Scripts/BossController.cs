@@ -1,19 +1,19 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class BiohazardController : Character, IEnemyCharacter
+//break up this class by enemy type later on
+public class BossController : MonoBehaviour
 {
-    [Tooltip("Proximity Range Order is as they appear in the array for all properties")] public string tip;
-    private bool abutton;
+    [Tooltip("Proximity Range Order is as they appear in the array for all properties")]public string tip;
+    private bool dbutton, abutton, sbutton;
     private Vector2 movement;
     private Animator animator;
     private Camera cam;
     private CircleCollider2D col;
     private Rigidbody2D rb;
     private Hitbox hitbox;
-    private Stats stats;
+    private BossStatistics stats;
     private AudioSource sound;
     public AudioClip[] clips;
     private float multiValH, multiValV;
@@ -21,12 +21,17 @@ public class BiohazardController : Character, IEnemyCharacter
     //[HideInInspector] public bool specialReady;
     [HideInInspector] public bool dashReady;
     private bool dead;
+    public float[] dashScalars;
+    public float[] dashWaitScalars;
+    int dCount = 0;
+    bool dashed = false;
+    Vector2 dashVector = Vector2.zero;
     bool idle;
     bool moving;
-    bool inPosition;
-    public Transform transformationPosition;
-    public UnityEvent OnEnterPosition;
-
+    private float timeToCount;
+    public float shootingWait;
+    ObjectPooler objectPooler;
+    
     [HideInInspector] public Transform targetPos;
     private float targetXPosition;
     private float targetYPosition;
@@ -36,9 +41,10 @@ public class BiohazardController : Character, IEnemyCharacter
 
     float x, y;
     
+    public Transform firePath;
     [HideInInspector] public Vector3 tempV;
     private Vector2 lookVector;
-
+    
     bool attacked = false;
     int dirState;
 
@@ -56,7 +62,9 @@ public class BiohazardController : Character, IEnemyCharacter
     private float movementMultiplier;
     public bool[] attackTimes;
     public int[] animNumbers;
+    public bool[] dashTimes;
     public float[] movementMultipliers;
+    public bool[] shootTimes;
 
     //private ContactFilter2D contactFilter;
 
@@ -65,25 +73,38 @@ public class BiohazardController : Character, IEnemyCharacter
         dead = false;
         attackReady = true;
         dashReady = true;
-        stats = GetComponent<Stats>();
+        stats = GetComponent<BossStatistics>();
         animator = GetComponent<Animator>();
         hitbox = GetComponent<Hitbox>();
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CircleCollider2D>();
         cam = FindObjectOfType<Camera>().GetComponent<Camera>();
         sound = GetComponentInChildren<AudioSource>();
-        targetPos = FindObjectOfType<ControlT>().transform;
+        targetPos = FindObjectOfType<PlayerController>().transform;
+        //contactFilter.layerMask = 10;
+        //contactFilter.useLayerMask = true;
+        //contactFilter.useNormalAngle = false;
         idle = true;
     }
 
     void Start()
     {
+        //EventManager.onPlayerJoined += this.OnPlayerJoined;
+        timeToCount = shootingWait;
         currentDirection = "right";
         previousDirection = currentDirection;
         multiValH = 1;
         multiValV = 1;
+        objectPooler = ObjectPooler.Instance;
     }
-    
+
+    void FixedUpdate()
+    {
+        Dash();
+
+        if (dashed) rb.velocity = new Vector2(movement.x, movement.y);
+    }
+
     void Update()
     {
         if (targetPos.position.y >= transform.position.y)
@@ -114,14 +135,20 @@ public class BiohazardController : Character, IEnemyCharacter
 
             DetermineInputs();
 
-            DetermineDirections();
+            DetermineLookDirection();
 
             AnimateAttacks();
+            
+            if (sbutton && timeToCount == shootingWait)
+            {
+                StartCoroutine("ShootProjectile");
+                //ShootProjectile();
+            }
 
-            if (!hitbox.wasHit) rb.velocity = new Vector2(movement.x * multiValH, movement.y * multiValV)
+            if (!dashed && !hitbox.wasHit) rb.velocity = new Vector2(movement.x * multiValH, movement.y * multiValV)
                     * Time.timeScale;
             
-            if (!hitbox.wasHit)
+            if (!dashed || timeToCount == shootingWait && !hitbox.wasHit)
             {
                 AnimateMovement();
             }
@@ -147,7 +174,7 @@ public class BiohazardController : Character, IEnemyCharacter
             col.enabled = false;
         }
     }
-
+    
     public void DetermineInputs()
     {
         //int i = 0;
@@ -157,7 +184,7 @@ public class BiohazardController : Character, IEnemyCharacter
 
         x = targetPos.position.x - transform.position.x;
         y = targetPos.position.y - transform.position.y;
-
+        
         lookVector = new Vector2(x, y);
         //lookVector = lookVector / lookVector.magnitude;
         //lookVector = lookVector.normalized;
@@ -166,52 +193,71 @@ public class BiohazardController : Character, IEnemyCharacter
         bool gFarAwayX = targetPos.position.x < transform.position.x;
         bool lFarAwayY = targetPos.position.y > transform.position.y;
         bool gFarAwayY = targetPos.position.y < transform.position.y;
-
+        
         //also setup attack potential values
         if (lookVector.magnitude <= (radius1 + radiusOffset) && !PauseMenu.isGamePaused)
         {
             abutton = attackTimes[j];
             animNumber = animNumbers[j];
+            dbutton = dashTimes[j];
             movementMultiplier = movementMultipliers[j];
-            movement = lookVector.normalized * stats.baseMoveSpd * attackScalar * movementMultiplier;
+            sbutton = shootTimes[j];
+            movement = lookVector.normalized * 1 * attackScalar * movementMultiplier;
         }
         else if (lookVector.magnitude <= (radius2 + radiusOffset) && !PauseMenu.isGamePaused)
         {
             j = 1;
             abutton = attackTimes[j];
             animNumber = animNumbers[j];
+            dbutton = dashTimes[j];
             movementMultiplier = movementMultipliers[j];
-            movement = lookVector.normalized * stats.baseMoveSpd * attackScalar * movementMultiplier;
+            sbutton = shootTimes[j];
+            movement = lookVector.normalized * 1 * attackScalar * movementMultiplier;
         }
         else if (lookVector.magnitude <= (radius3 + radiusOffset) && !PauseMenu.isGamePaused)
         {
             j = 2;
             abutton = attackTimes[j];
             animNumber = animNumbers[j];
+            dbutton = dashTimes[j];
             movementMultiplier = movementMultipliers[j];
-            movement = lookVector.normalized * stats.baseMoveSpd * attackScalar * movementMultiplier;
+            sbutton = shootTimes[j];
+            movement = lookVector.normalized * 1 * attackScalar * movementMultiplier;
         }
         else if (lookVector.magnitude <= (radius4 + radiusOffset) && !PauseMenu.isGamePaused)
         {
             j = 3;
             abutton = attackTimes[j];
             animNumber = animNumbers[j];
+            dbutton = dashTimes[j];
             movementMultiplier = movementMultipliers[j];
-            movement = lookVector.normalized * stats.baseMoveSpd * attackScalar * movementMultiplier;
-            Debug.Log(attackScalar);
+            sbutton = shootTimes[j];
+            movement = lookVector.normalized * 1 * attackScalar * movementMultiplier;
         }
         else
         {
             abutton = false;
+            dbutton = false;
+            sbutton = false;
             movement = Vector2.zero;
         }
 
+        //Here, this section controls movement of AI. Once in range movement and other 
+        //will be controlled through some other means.
+
         multiValH = 1;
         multiValV = 1;
+        //xm = x / Mathf.Sqrt(Mathf.Pow(x, 2) + Mathf.Pow(y, 2));
+        //ym = y / Mathf.Sqrt(Mathf.Pow(x, 2) + Mathf.Pow(y, 2));
+        //xm = x / Mathf.Sqrt((x * x) + (y * y));
+        //ym = y / Mathf.Sqrt((x * x) + (y * y));
+        //movement = new Vector2(xm * m, ym * m);// * moveSwitches[i];
     }
-
-    public override void DetermineDirections()
+    
+    public void DetermineLookDirection()
     {
+        //firepath.right = (IP.tempV - transform.position) + transform.position;
+
         int direction;
 
         bool rangeX = (lookVector.x > -0.7f) && (lookVector.x < 0.7f); //can do 0.71 or 0.707 for more precision
@@ -220,7 +266,7 @@ public class BiohazardController : Character, IEnemyCharacter
         bool yp = (lookVector.y > 0.5f) && (lookVector.y < 0.866f);
         bool xn = (lookVector.x < -0.5f) && (lookVector.x > -0.866f);
         bool yn = (lookVector.y < -0.5f) && (lookVector.y > -0.866f);
-
+        
         if (lookVector.x > 0 && rangeY)
         {
             direction = 3;
@@ -234,7 +280,106 @@ public class BiohazardController : Character, IEnemyCharacter
         }
     }
 
-    public override void AnimateAttacks()
+    void Dash()
+    {
+        int direction = 0;
+
+        if (dbutton && dashReady)
+        {
+            dashReady = false;
+            attackReady = false;
+            dashed = true;
+            
+            dashVector = lookVector.normalized;
+
+            //for determining the animation direction
+            if (dashVector.x < 0)
+            {
+                direction = 4;
+            }
+            else if (dashVector.x > 0)
+            {
+                direction = 3;
+            }
+            else if (dashVector.x == 0)
+            {
+                if (dashVector.y < 0)
+                {
+                    direction = 4;
+                }
+                else if (dashVector.y > 0)
+                {
+                    direction = 3;
+                }
+            }
+
+            dCount = 0;
+            animator.SetInteger("Direction", direction);
+            animator.SetTrigger("Dash");
+            if (clips[0] != null)
+            {
+                sound.clip = clips[0];
+                sound.Play();
+            }
+        }
+
+        if (dashed)
+        {
+            if (dCount < dashScalars.Length) movement = dashVector * dashScalars[dCount] * 3.5f;
+            dCount++;
+
+            if (dCount == dashScalars.Length)
+            {
+                
+            }
+
+            if (dCount == dashScalars.Length + dashWaitScalars.Length)
+            {
+                dCount = 0;
+                dashed = false;
+                dashReady = true;
+                attackReady = true;
+            }
+        }
+    }
+    
+    IEnumerator ShootProjectile()
+    {
+        animator.SetBool("Fire", false);
+        animator.SetTrigger("Shoot");
+        sound.clip = clips[1];
+        sound.Play();
+
+        while (timeToCount > 0)
+        {
+            timeToCount -= Time.deltaTime;
+
+            yield return null;
+        }
+
+        animator.SetBool("Fire", true);
+        //firePath.right = (((Vector3)lookVector + firePath.position) - transform.position) + transform.position;
+        firePath.right = ((Vector3)lookVector - transform.position) + transform.position;
+        
+        GameObject ammoInstance;
+        ammoInstance = objectPooler.SpawnFromPool("EG2 Bullet", firePath.position, firePath.right, firePath.rotation);
+        //ammoInstance = objectPooler.GetPooledObject();
+
+        //specialReady = false; //delete this later, it does nothing
+
+        float tempTime = 1f;
+
+        while (tempTime > 0)
+        {
+            tempTime -= Time.deltaTime;
+
+            yield return null;
+        }
+        
+        timeToCount = shootingWait;
+    }
+
+    public void AnimateAttacks()
     {
         if (abutton && attackReady)
         {
@@ -247,19 +392,10 @@ public class BiohazardController : Character, IEnemyCharacter
             sound.clip = clips[0];
             sound.Play();
         }
-
+        
     }
 
-    public void LetIntroPlay()
-    {
-        if (transform.position == transformationPosition.position)
-        {
-            inPosition = true;
-            if (OnEnterPosition != null) OnEnterPosition.Invoke();
-        }
-    }
-
-    public override void AnimateMovement()
+    public void AnimateMovement()
     {
         int direction = 0;
 
@@ -272,7 +408,7 @@ public class BiohazardController : Character, IEnemyCharacter
         {
             direction = 3;
         }
-
+        
         if (movement == Vector2.zero)
         {
             idle = true;
@@ -283,13 +419,13 @@ public class BiohazardController : Character, IEnemyCharacter
             idle = false;
             moving = true;
         }
-
+        
         animator.SetInteger("Direction", direction);
         animator.SetBool("Idle", idle);
         animator.SetBool("Moving", moving);
     }
 
-    public override void ResetVars()
+    public void ResetVars()
     {
         if (attacked)
         {
@@ -299,8 +435,8 @@ public class BiohazardController : Character, IEnemyCharacter
             //stats.SetAttackPotential(-1);
         }
     }
-
-    public override void AnimateDamage(Vector2 a)
+    
+    public void AnimateDamage(Vector2 a)
     {
         if (!dead)
         {
@@ -316,13 +452,13 @@ public class BiohazardController : Character, IEnemyCharacter
             dirState = direction;
             animator.SetInteger("Direction", direction);
             animator.SetTrigger("Hit");
-            rb.velocity = a * hitbox.forceOfAttack;
+            rb.velocity = a * stats.force;
             sound.clip = clips[2];
             sound.Play();
         }
     }
 
-    public override void Die()
+    public void Die()
     {
         animator.SetInteger("Direction", dirState);
         animator.SetTrigger("Dead");

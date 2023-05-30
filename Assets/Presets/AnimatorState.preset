@@ -22,18 +22,8 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: m_Transitions.Array.size
-    value: 2
+    value: 0
     objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_Transitions.Array.data[0]
-    value: 
-    objectReference: {fileID: -7850537907643430280, guid: 1e046fb8cc5a3694594dcbf3f4f3b8c8,
-      type: 2}
-  - target: {fileID: 0}
-    propertyPath: m_Transitions.Array.data[1]
-    value: 
-    objectReference: {fileID: 8183113408529730096, guid: 1e046fb8cc5a3694594dcbf3f4f3b8c8,
-      type: 2}
   - target: {fileID: 0}
     propertyPath: m_StateMachineBehaviours.Array.size
     value: 0
