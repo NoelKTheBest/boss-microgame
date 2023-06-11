@@ -289,23 +289,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 7
-  attackDirectionOverride: none
-  directionForAttack: look
   attackReady: 0
   openWindow: 0
   useFastAdvance: 0
-  stepDirectionOverride: 
-  directionForStep: 
   attackScalar: 0
   isStepping: 0
   stepTime: 0
   stepCooldown: 0
   stepSpeed: 0
-  dashDirectionOverride: none
-  directionForDash: 
+  recoveryAmount: 0
   isDashing: 0
   accelTime: 0
   accelAmount: 0
+  totalDashTime: 0
   dashTime: 0
   dashCooldown: 0
   dashSpeed: 0
@@ -326,6 +322,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88fbc73974a6fd341971eacd0d8880fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mouseOffset: 45
+  directionForAttack: 
+  attackDirectionOverride: none
+  directionForDash: 
+  dashDirectionOverride: none
+  directionForStep: 
+  stepDirectionOverride: none
+  attackDirection: 0
+  dashDirection: 0
+  stepDirection: 0
+  moveDirection: 0
   hDir: 0
   vDir: 0
   hDir2: 0

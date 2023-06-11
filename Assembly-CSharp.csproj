@@ -62,6 +62,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\DebugMove.cs" />
     <Compile Include="Assets\Scripts\Menu Scripts\ControlsMenu.cs" />
     <Compile Include="Assets\Scripts\Menu Scripts\GameOverMenu.cs" />
     <Compile Include="Assets\Scripts\Menu Scripts\MainMenu.cs" />
@@ -86,12 +87,15 @@
     <Compile Include="Assets\Scripts\Runtime Scripts\HealthBar.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\Hitbox.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\InputProcessor.cs" />
+    <Compile Include="Assets\Scripts\Runtime Scripts\MovementSFXController.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\ObjectPooler.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\PlayerHurtbox.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\PlayerStatistics.cs" />
     <Compile Include="Assets\Scripts\Runtime Scripts\TissyBlade.cs" />
     <Compile Include="Assets\Scripts\Testing\MouseHitbox.cs" />
+    <Compile Include="Assets\TempDirection.cs" />
+    <Compile Include="Assets\TestBehavior.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\NewUnlitShader.shader" />

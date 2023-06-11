@@ -6,6 +6,8 @@ public class InputProcessor : MonoBehaviour
 {
     // PREPARE TO MAKE A REMAPPING FEATURE THAT CAN WORK FOR BOTH CURRENT PROJECTS
 
+    public float mouseOffset;
+
     // Serialized Properties
     public string directionForAttack, attackDirectionOverride = "none";
     public string directionForDash, dashDirectionOverride = "none";
@@ -68,8 +70,11 @@ public class InputProcessor : MonoBehaviour
     {
         Vector3 playerScreenCoord = cam.WorldToScreenPoint(transform.position);
 
+        //Debug.Log("player: " + playerScreenCoord);
+        //Debug.Log("mouse: " + Input.mousePosition);
+
         //will not need z axis
-        float mx = Input.mousePosition.x;
+        float mx = Input.mousePosition.x + mouseOffset;
         float my = Input.mousePosition.y;
         //float mz = Input.mousePosition.z;
         float px = playerScreenCoord.x;
@@ -79,6 +84,10 @@ public class InputProcessor : MonoBehaviour
         float x, y;//, z;
         float ax, ay;
         float nx, ny;
+
+        Vector3 newMousePos = new Vector3(mx, my, 0);
+
+        //Debug.Log("new mouse: " + newMousePos);
 
         //using abs value tells us how far away the cursor is from the player in terms of x and y positions
         xDif = mx - px;
@@ -201,7 +210,7 @@ public class InputProcessor : MonoBehaviour
 
     void DetermineLookDirection()
     {
-
+        
         //firepath.right = (IP.tempV - transform.position) + transform.position;
 
         // The step mechanic will use the same direction as the attack direction. If attack direction is look, then
@@ -416,5 +425,11 @@ public class InputProcessor : MonoBehaviour
         }
 
         Debug.Log(moveDirection);
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(cam.WorldToScreenPoint(transform.position), Input.mousePosition);
     }
 }

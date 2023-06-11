@@ -47,7 +47,8 @@ public class BossController : MonoBehaviour
     
     bool attacked = false;
     int dirState;
-
+    
+    // Will use radius for distance
     public float radius1;
     public float radius2;
     public float radius3;
@@ -100,7 +101,6 @@ public class BossController : MonoBehaviour
 
     void FixedUpdate()
     {
-        Dash();
 
         if (dashed) rb.velocity = new Vector2(movement.x, movement.y);
     }
@@ -277,69 +277,6 @@ public class BossController : MonoBehaviour
         {
             direction = 4;
             dirState = direction;
-        }
-    }
-
-    void Dash()
-    {
-        int direction = 0;
-
-        if (dbutton && dashReady)
-        {
-            dashReady = false;
-            attackReady = false;
-            dashed = true;
-            
-            dashVector = lookVector.normalized;
-
-            //for determining the animation direction
-            if (dashVector.x < 0)
-            {
-                direction = 4;
-            }
-            else if (dashVector.x > 0)
-            {
-                direction = 3;
-            }
-            else if (dashVector.x == 0)
-            {
-                if (dashVector.y < 0)
-                {
-                    direction = 4;
-                }
-                else if (dashVector.y > 0)
-                {
-                    direction = 3;
-                }
-            }
-
-            dCount = 0;
-            animator.SetInteger("Direction", direction);
-            animator.SetTrigger("Dash");
-            if (clips[0] != null)
-            {
-                sound.clip = clips[0];
-                sound.Play();
-            }
-        }
-
-        if (dashed)
-        {
-            if (dCount < dashScalars.Length) movement = dashVector * dashScalars[dCount] * 3.5f;
-            dCount++;
-
-            if (dCount == dashScalars.Length)
-            {
-                
-            }
-
-            if (dCount == dashScalars.Length + dashWaitScalars.Length)
-            {
-                dCount = 0;
-                dashed = false;
-                dashReady = true;
-                attackReady = true;
-            }
         }
     }
     
