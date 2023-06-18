@@ -78,6 +78,7 @@ public class PlayerHurtbox : MonoBehaviour
             BossStatistics boss = collider.GetComponentInParent<BossStatistics>();
             Vector2 attackVector = transform.position - collider.transform.position;
             myController.ReceiveKnockback(attackVector, boss.force);
+            myStats.TakeDamage(boss.currentAtk);
 
             //if (hb.gameObject.tag == "Projectile") hitByProjectile = true;
             

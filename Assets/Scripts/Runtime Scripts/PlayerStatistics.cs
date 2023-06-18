@@ -11,15 +11,12 @@ public class PlayerStatistics : MonoBehaviour
     //public bool hitSomeone;
     public float currentHP;
     public float currentAtk;
-    public float currentDef;
-    public float currentSpd;
     private float hp;//100
     private float atk;//50
-    private float def;//30
     public bool dead;
     [HideInInspector] public float attackPotential;
     [HideInInspector] public float force;
-    [HideInInspector] public HealthBar hb;
+    public HealthBar hb;
     public DamageTaken OnDamageTaken;
     //private HealingItem drinks;
 
@@ -47,6 +44,14 @@ public class PlayerStatistics : MonoBehaviour
     }
     */
     #endregion
+    
+    void Start()
+    {
+        hp = currentHP;
+        atk = currentAtk;
+
+        hb.SetHP(hp);
+    }
 
     void Update()
     {
@@ -59,10 +64,11 @@ public class PlayerStatistics : MonoBehaviour
     public void TakeDamage(float dmg)
     {
         if (dmg == 0) return;
-        float d = dmg - currentDef;
-        if (d <= 0) return;
+        //float d = dmg - currentDef;
+        //if (d <= 0) return;
 
-        currentHP -= (dmg - currentDef);
+        //currentHP -= (dmg - currentDef);
+        currentHP -= dmg;
         if (currentHP < 0) currentHP = 0;
         hb.SubtractFromHP(currentHP, hp);
 

@@ -145,6 +145,13 @@ public class PlayerController : MonoBehaviour
 
             if (IP.dbutton && canDash)
             {
+                if (IP.fxAnimationDirection == 4)
+                    objectPooler.SpawnFromPool("Player Dash FX Right", transform.position, 
+                        transform.right, transform.rotation);
+                if (IP.fxAnimationDirection == 3)
+                    objectPooler.SpawnFromPool("Player Dash FX Left", transform.position,
+                        transform.right, transform.rotation);
+
                 StartCoroutine(Dash());
                 //animator.SetTrigger("Dash");
                 attackReady = false;

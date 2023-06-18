@@ -13,7 +13,8 @@ public class InputProcessor : MonoBehaviour
     public string directionForDash, dashDirectionOverride = "none";
     public string directionForStep, stepDirectionOverride = "none";
 
-    [HideInInspector] public int attackDirection, dashDirection, stepDirection, moveDirection;
+    [HideInInspector] public int attackDirection, dashDirection, stepDirection, 
+        moveDirection, fxAnimationDirection;
     [HideInInspector] public float hDir, vDir, hDir2, vDir2;
     private float xPoint, yPoint, xPoint2, yPoint2;
     [HideInInspector] public float moveH, moveV, lookX, lookY;
@@ -29,7 +30,8 @@ public class InputProcessor : MonoBehaviour
     
     void Awake()
     {
-        cam = FindObjectOfType<Camera>().GetComponent<Camera>();
+        //cam = FindObjectOfType<Camera>().GetComponent<Camera>();
+        cam = Camera.main;
     }
     
     void Update()
@@ -289,21 +291,25 @@ public class InputProcessor : MonoBehaviour
                 if (lookY > 0 && rangeX)
                 {
                     dashDirection = 1;
+                    fxAnimationDirection = 3;
                 }
 
                 if (lookY < 0 && rangeX)
                 {
                     dashDirection = 2;
+                    fxAnimationDirection = 4;
                 }
 
                 if (lookX > 0 && rangeY)
                 {
                     dashDirection = 3;
+                    fxAnimationDirection = 3;
                 }
 
                 if (lookX < 0 && rangeY)
                 {
                     dashDirection = 4;
+                    fxAnimationDirection = 4;
                 }
             }
             else if (directionForDash == "move")
@@ -314,21 +320,25 @@ public class InputProcessor : MonoBehaviour
                 if (moveV > 0 && rangeX)
                 {
                     dashDirection = 1;
+                    fxAnimationDirection = 3;
                 }
 
                 if (moveV < 0 && rangeX)
                 {
                     dashDirection = 2;
+                    fxAnimationDirection = 4;
                 }
 
                 if (moveH > 0 && rangeY)
                 {
                     dashDirection = 3;
+                    fxAnimationDirection = 3;
                 }
 
                 if (moveH < 0 && rangeY)
                 {
                     dashDirection = 4;
+                    fxAnimationDirection = 4;
                 }
             }
 
@@ -429,6 +439,7 @@ public class InputProcessor : MonoBehaviour
 
     void OnDrawGizmos()
     {
+        cam = Camera.main;
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(cam.WorldToScreenPoint(transform.position), Input.mousePosition);
     }

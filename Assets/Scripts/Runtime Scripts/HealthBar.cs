@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
@@ -11,8 +12,8 @@ public class HealthBar : MonoBehaviour
     public Color strongHitColor;
     public Color mediumHitColor;
     public Color weakHitColor;
-    public Transform losingBar;
-    SpriteRenderer barSprite;
+    public RectTransform losingBar;
+    public Image barSprite;
     private float previousFloat;
     private float currentFloat;
     private float scaleDown;
@@ -21,26 +22,31 @@ public class HealthBar : MonoBehaviour
 
     void Awake()
     {
-        barSprite = losingBar.GetComponent<SpriteRenderer>();
+        //barSprite = losingBar.GetComponent<SpriteRenderer>();
     }
     
     public void SetHP(float hp)
     {
+        //Debug.Log("Someone called me!");
+        Debug.Log(hp);
         hptotal = hp;
         currenthp = hptotal;
-        //Debug.Log(currenthp);
     }
 
     void Update()
     {
-        //Debug.Log(currenthp);
         previousFloat = losingBar.localScale.x;
         currentFloat = currenthp / hptotal;
 
         float newFloat = ((currentFloat - previousFloat) / 20) + losingBar.localScale.x;
         if (newFloat < 0) newFloat = 0;
         if (newFloat > 1) newFloat = 1;
-        losingBar.localScale = new Vector2(newFloat, losingBar.localScale.y);
+        //Debug.Log(newFloat);
+        //Debug.Log(currentFloat - previousFloat);
+        //Debug.Log("previous: " + previousFloat);
+        //Debug.Log(hptotal);
+        
+        losingBar.localScale = new Vector3(newFloat, losingBar.localScale.y, losingBar.localScale.z);
     }
 
     public void SubtractFromHP(float currenthp, float hp)
