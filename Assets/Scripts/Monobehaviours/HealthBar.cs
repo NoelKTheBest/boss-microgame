@@ -28,7 +28,7 @@ public class HealthBar : MonoBehaviour
     public void SetHP(float hp)
     {
         //Debug.Log("Someone called me!");
-        Debug.Log(hp);
+        //Debug.Log(hp);
         hptotal = hp;
         currenthp = hptotal;
     }

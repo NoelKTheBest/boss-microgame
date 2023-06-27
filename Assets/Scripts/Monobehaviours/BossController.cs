@@ -107,6 +107,7 @@ public class BossController : MonoBehaviour
 
     void Update()
     {
+        /*
         if (targetPos.position.y >= transform.position.y)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, targetPos.position.z - 1);
@@ -173,6 +174,7 @@ public class BossController : MonoBehaviour
             rb.velocity = Vector2.zero;
             col.enabled = false;
         }
+        */
     }
     
     public void DetermineInputs()
