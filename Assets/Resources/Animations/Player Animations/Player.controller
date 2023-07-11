@@ -3458,9 +3458,6 @@ AnimatorStateTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: Attack A
     m_EventTreshold: 0
-  - m_ConditionMode: 2
-    m_ConditionEvent: Upgrade
-    m_EventTreshold: 0
   - m_ConditionMode: 3
     m_ConditionEvent: Direction
     m_EventTreshold: 0
@@ -7343,9 +7340,6 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 1
     m_ConditionEvent: Attack B
-    m_EventTreshold: 0
-  - m_ConditionMode: 2
-    m_ConditionEvent: Upgrade
     m_EventTreshold: 0
   - m_ConditionMode: 3
     m_ConditionEvent: Direction

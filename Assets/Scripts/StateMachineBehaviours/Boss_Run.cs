@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Boss_Run : StateMachineBehaviour
 {
-    Transform player;
-    Rigidbody2D rb;
     public float speed = 7;
+    public float attackRange = 2;
+
+    Rigidbody2D rb;
+    Transform player;
     int animationDirection;
 
     // OnStateEnter is called before OnStateEnter is called on any state inside this state machine
@@ -48,12 +50,20 @@ public class Boss_Run : StateMachineBehaviour
 
         Vector2 newPos = Vector2.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
         rb.MovePosition(newPos);
+
+        if (Vector2.Distance(player.position, rb.position) <= attackRange)
+        {
+            animator.SetTrigger("Attack");
+            animator.SetBool("Moving", false);
+            //Debug.Log("Attack!");
+        }
     }
 
     // OnStateExit is called before OnStateExit is called on any state inside this state machine
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.updateMode = AnimatorUpdateMode.Normal;
+        //animator.ResetTrigger("Attack");
     }
 
     // OnStateMachineEnter is called when entering a state machine via its Entry Node
@@ -68,13 +78,7 @@ public class Boss_Run : StateMachineBehaviour
         animator.SetBool("Moving", true);
         animator.SetInteger("Direction", animationDirection);
     }
-
-    // OnStateMachineExit is called when exiting a state machine via its Exit Node
-    override public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
-    {
-        
-    }
-
+    
     void DetermineAnimationDirection(Vector2 look)
     {
         bool rangeX = false;
