@@ -67,6 +67,7 @@ public class PlayerController : MonoBehaviour
     private PlayerHurtbox hurtbox;
     private Animator animator;
     private CircleCollider2D col;
+    private Transform fxPosition;
 
 
     //---Other---------------------------------------
@@ -92,6 +93,7 @@ public class PlayerController : MonoBehaviour
         IP = GetComponent<InputProcessor>();
         hitbox = GetComponent<Hitbox>();
         col = GetComponent<CircleCollider2D>();
+        fxPosition = GameObject.FindGameObjectWithTag("FX Position").transform;
     }
 
     void Start()
@@ -146,11 +148,11 @@ public class PlayerController : MonoBehaviour
             if (IP.dbutton && canDash)
             {
                 if (IP.fxAnimationDirection == 4)
-                    objectPooler.SpawnFromPool("Player Dash FX Right", transform.position, 
-                        transform.right, transform.rotation);
+                    objectPooler.SpawnFromPool("Player Dash FX Right", fxPosition.position, 
+                        fxPosition.right, fxPosition.rotation);
                 if (IP.fxAnimationDirection == 3)
                     objectPooler.SpawnFromPool("Player Dash FX Left", transform.position,
-                        transform.right, transform.rotation);
+                        fxPosition.right, fxPosition.rotation);
 
                 StartCoroutine(Dash());
                 //animator.SetTrigger("Dash");
@@ -181,6 +183,7 @@ public class PlayerController : MonoBehaviour
     
     void AnimateAttacks()
     {
+        Debug.Log("ready: " + attackReady + ", testing: " + testingHurtbox + ", openWindow: " + openWindow);
         // The first attack will always execute and have attackScalar changed accordingly
         if (/*IP.abutton && */attackReady && !testingHurtbox && !openWindow)
         {

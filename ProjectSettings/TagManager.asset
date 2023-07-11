@@ -10,6 +10,7 @@ TagManager:
   - Projectile
   - Player Test Hitbox
   - Enemy Test Hitbox
+  - FX Position
   layers:
   - Default
   - TransparentFX

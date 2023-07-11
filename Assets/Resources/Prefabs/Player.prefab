@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: 3823064454455954674}
   - component: {fileID: 3823064454455954668}
   - component: {fileID: 3823064454455954677}
-  - component: {fileID: -7298817717784745623}
-  - component: {fileID: 3823064454455954669}
-  - component: {fileID: -9201330649193148696}
+  - component: {fileID: 7164103104669227695}
+  - component: {fileID: 1920806777974368815}
+  - component: {fileID: 8084752007904781270}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -157,49 +157,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 3823064454455954676}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2d6e9bb49c245f45acd909d750d46d7, type: 3}
+  m_Script: {fileID: 11500000, guid: 2213b1d6a5d813d4288001064c4f70d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 7
-  attackReady: 0
-  openWindow: 0
-  useFastAdvance: 0
-  attackScalar: 0
-  isStepping: 0
-  stepTime: 0
-  stepCooldown: 0
-  stepSpeed: 0
-  recoveryAmount: 0
-  isDashing: 0
-  accelTime: 0
-  accelAmount: 0
-  totalDashTime: 0
-  dashTime: 0
-  dashCooldown: 0
-  dashSpeed: 0
-  decelTime: 0
-  decelAmount: 0
-  shootingWait: 0
-  firepath: {fileID: 3823064455395500757}
-  testingHurtbox: 0
---- !u!114 &3823064454455954677
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3823064454455954676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88fbc73974a6fd341971eacd0d8880fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mouseOffset: 45
-  directionForAttack: 
+  mouseOffset: 50
+  directionForAttack: look
   attackDirectionOverride: none
-  directionForDash: 
+  directionForDash: move
   dashDirectionOverride: none
-  directionForStep: 
+  directionForStep: look
   stepDirectionOverride: none
   attackDirection: 0
   dashDirection: 0
@@ -221,7 +187,7 @@ MonoBehaviour:
   lookV: {x: 0, y: 0}
   tempV: {x: 0, y: 0, z: 0}
   controller: 0
---- !u!114 &-7298817717784745623
+--- !u!114 &3823064454455954677
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -230,17 +196,51 @@ MonoBehaviour:
   m_GameObject: {fileID: 3823064454455954676}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8efe172281c29f34cb4d07c4d3514522, type: 3}
+  m_Script: {fileID: 11500000, guid: 54f601980f83fc34aa4f716db1ec78c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 7
+  attackReady: 1
+  openWindow: 0
+  useFastAdvance: 0
+  attackScalar: 0
+  isStepping: 0
+  stepTime: 0.1
+  stepCooldown: 0.05
+  stepSpeed: 5
+  recoveryAmount: 0
+  isDashing: 0
+  accelTime: 0.1
+  accelAmount: 1.9999999
+  totalDashTime: 0.5
+  dashTime: 0.4
+  dashCooldown: 0.05
+  dashSpeed: 12
+  decelTime: 0.1
+  decelAmount: 1.9999999
+  shootingWait: 0
+  firepath: {fileID: 0}
+  testingHurtbox: 0
+--- !u!114 &7164103104669227695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3823064454455954676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7977365f6fec73342be2f95f66511bac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   wasHit: 0
   hitByProjectile: 0
-  hitboxPoint: {x: 0, y: 0}
-  hitboxOffset: {x: 0, y: 0}
-  hitboxSize: {x: 0, y: 0}
+  hitboxPoint: {x: -66.83, y: 30.08}
+  hitboxOffset: {x: -0.15, y: 0.25}
+  hitboxSize: {x: 0.86, y: 1.74}
   animHitboxOffset: {x: 0, y: 0}
   hitboxSizeOffset: {x: 0, y: 0}
---- !u!114 &3823064454455954669
+--- !u!114 &1920806777974368815
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -249,48 +249,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3823064454455954676}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e5869fc66adc604a95603bd962b281e, type: 3}
+  m_Script: {fileID: 11500000, guid: 1c9e844d37f43c1458e3cfd450617550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wasHit: 0
-  hitboxHealth: 0
-  hitByProjectile: 0
-  myStats: {fileID: 0}
-  OnHitDetected:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3823064454455954668}
-        m_MethodName: AnimateDamage
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: HitDetected, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  hitboxPoint: {x: -61.809998, y: 22.34}
-  hitboxOffset: {x: -0.14, y: 0.25}
-  hitboxSize: {x: 0.84, y: 1.73}
-  animHitboxOffset: {x: 0, y: 0}
-  hitboxSizeOffset: {x: 0, y: 0}
-  hitboxStrength: 0
---- !u!114 &-9201330649193148696
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3823064454455954676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1f36725a321cf84eb657b5b29eee601, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentHP: 0
-  currentAtk: 0
+  currentHP: 100
+  currentAtk: 30
   dead: 0
   attackPotential: 0
   force: 0
@@ -299,6 +262,32 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: DamageTaken, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+--- !u!114 &8084752007904781270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3823064454455954676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26d0f167abae83d48a8387f0b85f687c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wasHit: 0
+  hitboxHealth: 0
+  hitByProjectile: 0
+  myStats: {fileID: 0}
+  OnHitDetected:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: HitDetected, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  hitboxPoint: {x: 0, y: 0}
+  hitboxOffset: {x: 0, y: 0}
+  hitboxSize: {x: 0, y: 0}
+  animHitboxOffset: {x: 0, y: 0}
+  hitboxSizeOffset: {x: 0, y: 0}
+  hitboxStrength: 0
 --- !u!1 &3823064455395500756
 GameObject:
   m_ObjectHideFlags: 0
