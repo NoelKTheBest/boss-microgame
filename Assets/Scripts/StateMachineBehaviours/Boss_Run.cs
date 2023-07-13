@@ -48,14 +48,14 @@ public class Boss_Run : StateMachineBehaviour
                 animator.transform.position.y, player.position.z + 1);
         }
 
-        Vector2 newPos = Vector2.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
-        rb.MovePosition(newPos);
+        //Vector2 newPos = Vector2.MoveTowards(rb.position, target, speed * Time.fixedDeltaTime);
+        //rb.MovePosition(newPos);
+        rb.velocity = lookVector.normalized * speed;
 
         if (Vector2.Distance(player.position, rb.position) <= attackRange)
         {
             animator.SetTrigger("Attack");
             animator.SetBool("Moving", false);
-            //Debug.Log("Attack!");
         }
     }
 

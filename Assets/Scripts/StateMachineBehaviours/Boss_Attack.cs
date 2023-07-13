@@ -4,14 +4,22 @@ using UnityEngine;
 
 public class Boss_Attack : StateMachineBehaviour
 {
+    public float stepSpeed = 5f;
+    public float stepTime = 0.1f;
+
     Rigidbody2D rb;
     Transform player;
     int animationDirection;
+    float timeTillStepEnds;
+    float resetStrength;
+    Vector2 resetVector;
 
     // OnStateEnter is called before OnStateEnter is called on any state inside this state machine
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.updateMode = AnimatorUpdateMode.AnimatePhysics;
+
+        timeTillStepEnds = Time.fixedTime + stepTime;
     }
 
     // OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine
@@ -24,8 +32,17 @@ public class Boss_Attack : StateMachineBehaviour
         Debug.DrawLine((Vector2)animator.transform.position, (Vector2)animator.transform.position + lookVector, Color.cyan);
 
         DetermineAnimationDirection(lookVector);
-        Debug.Log(animationDirection);
         animator.SetInteger("Direction", animationDirection);
+
+        if (Time.fixedTime < timeTillStepEnds)
+        {
+            //Vector2 newPos = Vector2.MoveTowards(rb.position, target, stepSpeed * Time.fixedDeltaTime);
+            rb.velocity = lookVector.normalized * stepSpeed;
+        }
+
+        if (animationDirection < 3) resetStrength = 2f;
+        if (animationDirection > 2) resetStrength = 1f;
+        resetVector = (Vector2)animator.transform.position + (lookVector.normalized * resetStrength);
     }
 
     // OnStateExit is called before OnStateExit is called on any state inside this state machine
@@ -42,7 +59,13 @@ public class Boss_Attack : StateMachineBehaviour
 
         rb.velocity = Vector2.zero;
     }
-    
+
+    public override void OnStateMachineExit(Animator animator, int stateMachinePathHash)
+    {
+        rb.MovePosition(resetVector);
+        //Debug.Log(resetVector);
+    }
+
     void DetermineAnimationDirection(Vector2 look)
     {
         bool rangeX = false;
