@@ -96,6 +96,8 @@
     <Compile Include="Assets\Scripts\StateMachineBehaviours\AnimationPrefabParent.cs" />
     <Compile Include="Assets\Scripts\StateMachineBehaviours\Boss_Attack.cs" />
     <Compile Include="Assets\Scripts\StateMachineBehaviours\Boss_Run.cs" />
+    <Compile Include="Assets\Scripts\StateMachineBehaviours\Projectile_Launcher.cs" />
+    <Compile Include="Assets\Scripts\StateMachineBehaviours\ProjectilePrefab.cs" />
     <Compile Include="Assets\Scripts\Testing\MouseHitbox.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
