@@ -31,6 +31,7 @@ public class Boss_Attack : StateMachineBehaviour
         Vector2 lookVector = target - (Vector2)animator.transform.position;
         Debug.DrawLine((Vector2)animator.transform.position, (Vector2)animator.transform.position + lookVector, Color.cyan);
 
+        // For determining the direction of the next attack
         DetermineAnimationDirection(lookVector);
         animator.SetInteger("Direction", animationDirection);
 
@@ -98,11 +99,5 @@ public class Boss_Attack : StateMachineBehaviour
         {
             animationDirection = 4;
         }
-    }
-
-    void Step()
-    {
-        // Implement Step Mechanic
-        // Think about how we'll implement it
     }
 }

@@ -183,7 +183,7 @@ public class PlayerController : MonoBehaviour
     
     void AnimateAttacks()
     {
-        Debug.Log("ready: " + attackReady + ", testing: " + testingHurtbox + ", openWindow: " + openWindow);
+        //Debug.Log("ready: " + attackReady + ", testing: " + testingHurtbox + ", openWindow: " + openWindow);
         // The first attack will always execute and have attackScalar changed accordingly
         if (/*IP.abutton && */attackReady && !testingHurtbox && !openWindow)
         {

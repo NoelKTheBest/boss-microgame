@@ -34,6 +34,7 @@ public class Boss_Run : StateMachineBehaviour
         Vector2 lookVector = target - (Vector2)animator.transform.position;
         Debug.DrawLine((Vector2)animator.transform.position, (Vector2)animator.transform.position + lookVector, Color.red);
         
+        // For changing the animation direction when player moves around
         DetermineAnimationDirection(lookVector);
         animator.SetInteger("Direction", animationDirection);
 
