@@ -31,7 +31,8 @@ public class Boss_Retreat : StateMachineBehaviour
 
         Vector2 target = new Vector2(player.position.x, player.position.y);
         Vector2 lookVector = target - (Vector2)animator.transform.position;
-        Debug.DrawLine((Vector2)animator.transform.position, (Vector2)animator.transform.position + lookVector, Color.green);
+        Debug.DrawLine((Vector2)animator.transform.position, 
+            (Vector2)animator.transform.position + lookVector, Color.green);
 
         //DetermineAnimationDirection(lookVector);
         //animator.SetInteger("Direction", animationDirection);
@@ -67,6 +68,8 @@ public class Boss_Retreat : StateMachineBehaviour
     {
         if (rb == null) rb = animator.GetComponent<Rigidbody2D>();
         if (player == null) player = GameObject.FindGameObjectWithTag("Player").transform;
+        Debug.Log(rb);
+        // Debug.Log(player);
 
         // rb.velocity = Vector2.zero;
         if (Vector2.Distance(player.position, rb.position) <= approachRange)
@@ -105,6 +108,13 @@ public class Boss_Retreat : StateMachineBehaviour
     override public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
     {
         animator.SetBool("Neutral", false);
+
+        Vector2 target = new Vector2(player.position.x, player.position.y);
+        Vector2 lookVector = target - (Vector2)animator.transform.position;
+        DetermineAnimationDirection(lookVector);
+        animator.SetInteger("Direction", animationDirection);
+
+        rb.velocity = Vector2.zero;
     }
 
     // Could have made a class deriving from StateMachineBehaviour with this method 

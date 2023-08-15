@@ -29,7 +29,8 @@ public class Boss_Attack : StateMachineBehaviour
 
         Vector2 target = new Vector2(player.position.x, player.position.y);
         Vector2 lookVector = target - (Vector2)animator.transform.position;
-        Debug.DrawLine((Vector2)animator.transform.position, (Vector2)animator.transform.position + lookVector, Color.cyan);
+        Debug.DrawLine((Vector2)animator.transform.position, 
+            (Vector2)animator.transform.position + lookVector, Color.cyan);
 
         // For determining the direction of the next attack
         DetermineAnimationDirection(lookVector);
