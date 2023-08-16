@@ -1989,7 +1989,7 @@ Tilemap:
       - {fileID: -2147816707028960771, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 4618957681245923913, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 6513522493206877968, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
-      m_AnimationSpeed: 14.018502
+      m_AnimationSpeed: 12.009468
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -30, y: 14, z: 0}
@@ -2008,7 +2008,7 @@ Tilemap:
       - {fileID: -2147816707028960771, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 4618957681245923913, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 6513522493206877968, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
-      m_AnimationSpeed: 8.749131
+      m_AnimationSpeed: 9.49375
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -27, y: 14, z: 0}
@@ -2027,7 +2027,7 @@ Tilemap:
       - {fileID: -2147816707028960771, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 4618957681245923913, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 6513522493206877968, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
-      m_AnimationSpeed: 10.568325
+      m_AnimationSpeed: 14.881235
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -24, y: 14, z: 0}
@@ -2046,7 +2046,7 @@ Tilemap:
       - {fileID: -2147816707028960771, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 4618957681245923913, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 6513522493206877968, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
-      m_AnimationSpeed: 9.833502
+      m_AnimationSpeed: 12.334057
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   - first: {x: -21, y: 14, z: 0}
@@ -2065,7 +2065,7 @@ Tilemap:
       - {fileID: -2147816707028960771, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 4618957681245923913, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
       - {fileID: 6513522493206877968, guid: acef430a43e6ce94a8b723e84fd7828b, type: 3}
-      m_AnimationSpeed: 13.181431
+      m_AnimationSpeed: 14.039041
       m_AnimationTimeOffset: 0
       m_IsLooping: 1
   m_TileAssetArray:
@@ -6809,6 +6809,14 @@ MonoBehaviour:
     prefab: {fileID: 4517530975608411567, guid: ac0fc4df288e75e47abdccb9dd245c55,
       type: 3}
     size: 0
+  - tag: Player Projectile
+    prefab: {fileID: 9163371980471271702, guid: 6af364effce59714db181de6bc55d36c,
+      type: 3}
+    size: 3
+  - tag: Boss Projectile
+    prefab: {fileID: 3416597212134446615, guid: 67028c05e757a254ebf34e8d69c3f295,
+      type: 3}
+    size: 10
 --- !u!4 &1136105062
 Transform:
   m_ObjectHideFlags: 0
@@ -12058,30 +12066,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55f05dc7d87f8a24ea2e465355309084, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tip: 
   clips: []
-  attackReady: 0
-  dashReady: 0
-  dashScalars: []
-  dashWaitScalars: []
-  shootingWait: 0
-  targetPos: {fileID: 0}
   firePath: {fileID: 0}
   tempV: {x: 0, y: 0, z: 0}
-  radius1: 0
-  radius2: 0
-  radius3: 0
-  radius4: 0
-  radiusOffset: 0
-  detectionCenter: {x: 0, y: 0}
-  centerOffset: {x: 0, y: 0}
-  animCenterOffset: {x: 0, y: 0}
-  attackScalar: 0
-  attackTimes: 
-  animNumbers: 
-  dashTimes: 
-  movementMultipliers: []
-  shootTimes: 
+  shootingWait: 0
 --- !u!4 &1380927104
 Transform:
   m_ObjectHideFlags: 0
@@ -13786,7 +13774,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1974446708}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Boss Hitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}

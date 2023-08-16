@@ -2,11 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProjectilePrefab : StateMachineBehaviour
+public class ProjectilePrefab : MonoBehaviour
 {
-    // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    public float durationTime = 3f;
+    float newTime;
+
+    private void Start()
     {
-        animator.gameObject.SetActive(false);
+        newTime = Time.fixedTime + durationTime;
+    }
+
+    private void Update()
+    {
+        if (Time.fixedTime > newTime)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer != LayerMask.GetMask("Player Hitboxes") || 
+            collision.gameObject.layer != LayerMask.GetMask("Enemy Hitboxes"))
+            gameObject.SetActive(false);
     }
 }
