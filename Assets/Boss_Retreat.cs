@@ -68,7 +68,7 @@ public class Boss_Retreat : StateMachineBehaviour
     {
         if (rb == null) rb = animator.GetComponent<Rigidbody2D>();
         if (player == null) player = GameObject.FindGameObjectWithTag("Player").transform;
-        Debug.Log(rb);
+        // Debug.Log(rb);
         // Debug.Log(player);
 
         // rb.velocity = Vector2.zero;
@@ -97,6 +97,7 @@ public class Boss_Retreat : StateMachineBehaviour
             }
 
             animator.SetInteger("Direction", animationDirection);
+            animator.SetBool("Neutral", false);
         }
         else
         {
@@ -107,7 +108,7 @@ public class Boss_Retreat : StateMachineBehaviour
     // OnStateMachineExit is called when exiting a state machine via its Exit Node
     override public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
     {
-        animator.SetBool("Neutral", false);
+        //animator.ResetTrigger("Neutral");
 
         Vector2 target = new Vector2(player.position.x, player.position.y);
         Vector2 lookVector = target - (Vector2)animator.transform.position;
